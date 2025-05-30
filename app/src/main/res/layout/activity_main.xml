@@ -5,72 +5,40 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EEEEEE"
+    style="@style/bgStyle"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:text="Sign in"
-        android:textColor="#596FA0"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        style="@style/text_16_bold"
+        android:text="Sign in" />
 
     <!-- For Creating EditText Widget For Email Id -->
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="50dp"
-        android:background="@drawable/custom_border"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_50sdp"
         android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="#525353" />
+        android:inputType="textEmailAddress" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/custom_border"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_10sdp"
         android:hint="Password"
         android:inputType="textPassword"
-        android:maxLength="15"
-        android:padding="10dp"
-        android:textColor="@color/black"
-        android:textColorHint="#525353" />
+        android:maxLength="15" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/custom_button"
-        android:text="Log in"
-        android:textSize="16dp"
-        app:backgroundTint="@null" />
+        style="@style/button_14"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:text="Log in" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginVertical="20dp"
-        android:text="or connect with"
-        android:textAllCaps="true"
-        android:textSize="14dp" />
+        style="@style/text_12"
+        android:layout_marginVertical="@dimen/_20sdp"
+        android:text="or connect with" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:background="@drawable/custom_button"
-        android:text="Create an Account"
-        android:textSize="16dp"
-        app:backgroundTint="@null" />
+        style="@style/button_14"
+        android:text="Create an Account" />
 
 </LinearLayout>
