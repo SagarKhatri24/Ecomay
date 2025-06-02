@@ -15,12 +15,14 @@
 
     <!-- For Creating EditText Widget For Email Id -->
     <EditText
+        android:id="@+id/main_email"
         style="@style/edit_14"
         android:layout_marginTop="@dimen/_50sdp"
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
     <EditText
+        android:id="@+id/main_password"
         style="@style/edit_14"
         android:layout_marginTop="@dimen/_10sdp"
         android:hint="Password"
@@ -28,6 +30,7 @@
         android:maxLength="15" />
 
     <Button
+        android:id="@+id/main_login"
         style="@style/button_14"
         android:layout_marginTop="@dimen/_30sdp"
         android:text="Log in" />
@@ -38,6 +41,7 @@
         android:text="or connect with" />
 
     <Button
+        android:id="@+id/main_create_account"
         style="@style/button_14"
         android:text="Create an Account" />
 

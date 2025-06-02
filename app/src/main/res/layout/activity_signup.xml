@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/bgStyle"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        style="@style/text_16_bold"
+        android:text="Sign up" />
+
+    <EditText
+        android:id="@+id/signup_name"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_50sdp"
+        android:hint="Name"
+        android:inputType="textPersonName" />
+
+    <!-- For Creating EditText Widget For Email Id -->
+    <EditText
+        android:id="@+id/signup_email"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:maxLength="10"
+        android:id="@+id/signup_contact"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:hint="Contact No."
+        android:inputType="phone" />
+
+    <EditText
+        android:id="@+id/signup_password"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:maxLength="15" />
+
+    <EditText
+        android:id="@+id/signup_confirmn_password"
+        style="@style/edit_14"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:hint="Confirm Password"
+        android:inputType="textPassword"
+        android:maxLength="15" />
+
+    <Button
+        android:id="@+id/signup_login"
+        style="@style/button_14"
+        android:layout_marginTop="@dimen/_30sdp"
+        android:text="Signup" />
+
+</LinearLayout>
