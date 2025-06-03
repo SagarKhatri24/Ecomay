@@ -53,4 +53,12 @@
         <item name="android:textAllCaps">true</item>
     </style>
 
+    <style name="radio_14" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+        <item name="buttonTint">@color/blue_dark</item>
+    </style>
+
 </resources>
