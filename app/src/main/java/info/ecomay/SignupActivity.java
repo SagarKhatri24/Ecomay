@@ -1,11 +1,17 @@
 package info.ecomay;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -28,6 +34,10 @@ public class SignupActivity extends AppCompatActivity {
 
     String[] countryArray = { "Select Country", "India", "USA", "UK", "Canada" };
 
+    ImageView passwordHide,passwordShow,confirmPasswordHide,confirmPasswordShow;
+
+    SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +49,10 @@ public class SignupActivity extends AppCompatActivity {
             return insets;
         });
 
+        db = openOrCreateDatabase("Ecomay.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(100), EMAIL VARCHAR(100), CONTACT INTEGER(10),PASSWORD VARCHAR(20),GENDER VARCHAR(10),COUNTRY VARCHAR(20))";
+        db.execSQL(tableQuery);
+
         name = findViewById(R.id.signup_name);
         email = findViewById(R.id.signup_email);
         contact = findViewById(R.id.signup_contact);
@@ -48,6 +62,48 @@ public class SignupActivity extends AppCompatActivity {
         country = findViewById(R.id.signup_country);
         terms = findViewById(R.id.signup_terms);
         signup = findViewById(R.id.signup_button);
+
+        passwordHide = findViewById(R.id.signup_hide);
+        passwordShow = findViewById(R.id.signup_show);
+
+        passwordShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                password.setTransformationMethod(null);
+                passwordShow.setVisibility(GONE);
+                passwordHide.setVisibility(VISIBLE);
+            }
+        });
+
+        passwordHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                password.setTransformationMethod(new PasswordTransformationMethod());
+                passwordShow.setVisibility(VISIBLE);
+                passwordHide.setVisibility(GONE);
+            }
+        });
+
+        confirmPasswordHide = findViewById(R.id.signup_confirm_hide);
+        confirmPasswordShow = findViewById(R.id.signup_confirm_show);
+
+        confirmPasswordShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmPassword.setTransformationMethod(null);
+                confirmPasswordShow.setVisibility(GONE);
+                confirmPasswordHide.setVisibility(VISIBLE);
+            }
+        });
+
+        confirmPasswordHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmPassword.setTransformationMethod(new PasswordTransformationMethod());
+                confirmPasswordShow.setVisibility(VISIBLE);
+                confirmPasswordHide.setVisibility(GONE);
+            }
+        });
 
         ArrayAdapter adapter = new ArrayAdapter(SignupActivity.this, android.R.layout.simple_list_item_1,countryArray);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_checked);

@@ -41,21 +41,71 @@
             android:inputType="phone"
             android:maxLength="10" />
 
-        <EditText
-            android:id="@+id/signup_password"
-            style="@style/edit_14"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:maxLength="15" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp">
 
-        <EditText
-            android:id="@+id/signup_confirmn_password"
-            style="@style/edit_14"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:hint="Confirm Password"
-            android:inputType="textPassword"
-            android:maxLength="15" />
+            <EditText
+                android:id="@+id/signup_password"
+                style="@style/edit_14"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:maxLength="15" />
+
+            <ImageView
+                android:id="@+id/signup_hide"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginRight="@dimen/_40sdp"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/hide"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/signup_show"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginRight="@dimen/_40sdp"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/show" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp">
+
+            <EditText
+                android:id="@+id/signup_confirmn_password"
+                style="@style/edit_14"
+                android:hint="Confirm Password"
+                android:inputType="textPassword"
+                android:maxLength="15" />
+
+            <ImageView
+                android:id="@+id/signup_confirm_hide"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginRight="@dimen/_40sdp"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/hide"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/signup_confirm_show"
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginRight="@dimen/_40sdp"
+                android:padding="@dimen/_2sdp"
+                android:src="@drawable/show" />
+
+        </FrameLayout>
 
         <RadioGroup
             android:id="@+id/signup_gender"

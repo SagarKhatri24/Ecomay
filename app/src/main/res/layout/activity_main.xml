@@ -21,13 +21,38 @@
         android:hint="Email"
         android:inputType="textEmailAddress" />
 
-    <EditText
-        android:id="@+id/main_password"
-        style="@style/edit_14"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:maxLength="15" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <EditText
+            android:id="@+id/main_password"
+            style="@style/edit_14"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:maxLength="15" />
+
+        <ImageView
+            android:id="@+id/main_hide"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="@dimen/_40sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/hide"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/main_show"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginRight="@dimen/_40sdp"
+            android:padding="@dimen/_2sdp"
+            android:src="@drawable/show" />
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/main_login"

@@ -1,11 +1,16 @@
 package info.ecomay;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -21,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     Button login,createAccount;
     EditText email,password;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    ImageView passwordHide,passwordShow;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,27 @@ public class MainActivity extends AppCompatActivity {
 
         email = findViewById(R.id.main_email);
         password = findViewById(R.id.main_password);
+
+        passwordHide = findViewById(R.id.main_hide);
+        passwordShow = findViewById(R.id.main_show);
+
+        passwordShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                password.setTransformationMethod(null);
+                passwordShow.setVisibility(GONE);
+                passwordHide.setVisibility(VISIBLE);
+            }
+        });
+
+        passwordHide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                password.setTransformationMethod(new PasswordTransformationMethod());
+                passwordShow.setVisibility(VISIBLE);
+                passwordHide.setVisibility(GONE);
+            }
+        });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
