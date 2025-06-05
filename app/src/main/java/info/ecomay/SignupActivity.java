@@ -3,15 +3,18 @@ package info.ecomay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -37,6 +40,8 @@ public class SignupActivity extends AppCompatActivity {
     ImageView passwordHide,passwordShow,confirmPasswordHide,confirmPasswordShow;
 
     SQLiteDatabase db;
+
+    String sGender,sCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +114,26 @@ public class SignupActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_checked);
         country.setAdapter(adapter);
 
+        country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                sCountry = countryArray[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                RadioButton rb = findViewById(i);
+                sGender = rb.getText().toString();
+            }
+        });
+
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,8 +177,18 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Please Accept Terms & Condition", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(SignupActivity.this, "Signup Successfully", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
+                    String selectQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"' OR CONTACT='"+contact.getText().toString()+"'";
+                    Cursor cursor = db.rawQuery(selectQuery,null);
+                    if(cursor.getCount()>0){
+                        Toast.makeText(SignupActivity.this, "Email Id/Contact No. Already Registered", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        String insertQuery = "INSERT INTO USERS VALUES (NULL,'" + name.getText().toString() + "','" + email.getText().toString() + "','" + contact.getText().toString() + "','" + password.getText().toString() + "','" + sGender + "','" + sCountry + "')";
+                        db.execSQL(insertQuery);
+
+                        Toast.makeText(SignupActivity.this, "Signup Successfully", Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                    }
                 }
             }
         });

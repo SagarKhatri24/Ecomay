@@ -4,6 +4,9 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -28,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     ImageView passwordHide,passwordShow;
 
-
+    SQLiteDatabase db;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        db = openOrCreateDatabase("Ecomay.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(100), EMAIL VARCHAR(100), CONTACT INTEGER(10),PASSWORD VARCHAR(20),GENDER VARCHAR(10),COUNTRY VARCHAR(20))";
+        db.execSQL(tableQuery);
 
         login = findViewById(R.id.main_login);
         createAccount = findViewById(R.id.main_create_account);
@@ -92,7 +102,64 @@ public class MainActivity extends AppCompatActivity {
                     password.setError("Min. 6 Char Password Required");
                 }
                 else {
-                    if(email.getText().toString().trim().equalsIgnoreCase("admin@gmail.com") && password.getText().toString().trim().equalsIgnoreCase("Admin@123")) {
+                    /*String selectQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"' AND PASSWORD='"+password.getText().toString()+"'";
+                    Cursor cursor = db.rawQuery(selectQuery,null);
+                    if(cursor.getCount()>0){
+                        Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
+                        Snackbar.make(view, "Login Successfully", Snackbar.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                        startActivity(intent);
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Login Unsuccessfully", Toast.LENGTH_LONG).show();
+                        Snackbar.make(view, "Login Unsuccessfully", Snackbar.LENGTH_SHORT).show();
+                    }*/
+
+                    String selectQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"'";
+                    Cursor cursor = db.rawQuery(selectQuery,null);
+                    if(cursor.getCount()>0){
+                        String selectLoginQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"' AND PASSWORD='"+password.getText().toString()+"'";
+                        Cursor cursorSelect = db.rawQuery(selectLoginQuery,null);
+                        if(cursorSelect.getCount()>0) {
+                            while (cursorSelect.moveToNext()){
+                                String sId = cursorSelect.getString(0);
+                                String sName = cursorSelect.getString(1);
+                                String sEmail = cursorSelect.getString(2);
+                                String sContact = cursorSelect.getString(3);
+                                String sPassword = cursorSelect.getString(4);
+                                String sGender = cursorSelect.getString(5);
+                                String sCountry = cursorSelect.getString(6);
+
+                                sp.edit().putString(ConstantSp.USERID,sId).commit();
+                                sp.edit().putString(ConstantSp.NAME,sName).commit();
+                                sp.edit().putString(ConstantSp.EMAIL,sEmail).commit();
+                                sp.edit().putString(ConstantSp.CONTACT,sContact).commit();
+                                sp.edit().putString(ConstantSp.PASSWORD,sPassword).commit();
+                                sp.edit().putString(ConstantSp.GENDER,sGender).commit();
+                                sp.edit().putString(ConstantSp.COUNTRY,sCountry).commit();
+
+                                //Log.d("RESPONSE",sId+"\n"+sName+"\n"+sEmail+"\n"+sContact+"\n"+sPassword+"\n"+sGender+"\n"+sCountry);
+                            }
+
+                            Toast.makeText(MainActivity.this, "Login Successfully", Toast.LENGTH_LONG).show();
+                            Snackbar.make(view, "Login Successfully", Snackbar.LENGTH_SHORT).show();
+
+                            Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                            startActivity(intent);
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "Invalid Password", Toast.LENGTH_LONG).show();
+                            Snackbar.make(view, "Invalid Password", Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Email Id Not Registered", Toast.LENGTH_LONG).show();
+                        Snackbar.make(view, "Email Id Not Registered", Snackbar.LENGTH_SHORT).show();
+                    }
+
+
+                    /*if(email.getText().toString().trim().equalsIgnoreCase("admin@gmail.com") && password.getText().toString().trim().equalsIgnoreCase("Admin@123")) {
                         System.out.println("Login Successfully");
                         Log.d("RESPONSE", "Login Successfully");
                         Log.e("RESPONSE", "Login Successfully");
@@ -106,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     else{
                         Toast.makeText(MainActivity.this, "Login Unsuccessfully", Toast.LENGTH_LONG).show();
                         Snackbar.make(view, "Login Unsuccessfully", Snackbar.LENGTH_SHORT).show();
-                    }
+                    }*/
                 }
             }
         });
