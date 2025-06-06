@@ -12,4 +12,9 @@
         android:id="@+id/dashboard_data"
         style="@style/text_12"/>
 
+    <Button
+        android:id="@+id/dashboard_logout"
+        android:text="Logout"
+        style="@style/button_14"/>
+
 </LinearLayout>

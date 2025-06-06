@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                         else{
                             Toast.makeText(MainActivity.this, "Invalid Password", Toast.LENGTH_LONG).show();
