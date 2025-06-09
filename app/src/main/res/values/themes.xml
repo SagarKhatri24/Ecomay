@@ -8,6 +8,8 @@
 
     <style name="Theme.Ecomay" parent="Base.Theme.Ecomay" />
 
+    <style name="actionbar_new" parent="Theme.AppCompat.DayNight.DarkActionBar"/>
+
     <style name="bgStyle">
         <item name="android:background">@color/off_white</item>
         <!--<item name="android:background">@drawable/bg_image</item>-->
