@@ -4,6 +4,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,6 +32,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import info.ecomay.ConstantSp;
+import info.ecomay.DashboardActivity;
+import info.ecomay.MainActivity;
 import info.ecomay.R;
 import info.ecomay.SignupActivity;
 import info.ecomay.databinding.FragmentProfileBinding;
@@ -40,7 +45,7 @@ public class ProfileFragment extends Fragment {
     RadioGroup gender;
     RadioButton male,female;
     Spinner country;
-    Button submit,editProfile,logout;
+    Button submit,editProfile,logout,delete;
 
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
@@ -85,6 +90,76 @@ public class ProfileFragment extends Fragment {
 
         editProfile = binding.profileEdit;
         logout = binding.profileLogout;
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Logout!");
+                builder.setIcon(R.mipmap.ic_launcher);
+                builder.setMessage("Are You Sure Want to Logout!");
+
+                builder.setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //sp.edit().remove(ConstantSp.USERID).commit();
+                        sp.edit().clear().commit();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
+
+                builder.setNeutralButton("Rate Us", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(getActivity(), "Rate Us", Toast.LENGTH_SHORT).show();
+                        dialogInterface.dismiss();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        delete = binding.profileDelete;
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Delete Account!");
+                builder.setMessage("Are You Sure Want to Delete Your Account?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String deleteQuery = "DELETE FROM USERS WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"'";
+                        db.execSQL(deleteQuery);
+                        Toast.makeText(getActivity(), "Profile Deleted Successfully", Toast.LENGTH_SHORT).show();
+
+                        sp.edit().clear().commit();
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
 
         passwordShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +252,18 @@ public class ProfileFragment extends Fragment {
                 } else if (country.getSelectedItemPosition() <= 0) {
                     Toast.makeText(getActivity(), "Please Select Country", Toast.LENGTH_SHORT).show();
                 } else {
+                    String updateQuery = "UPDATE USERS SET NAME='"+name.getText().toString()+"',EMAIL='"+email.getText().toString()+"',CONTACT='"+contact.getText().toString()+"',PASSWORD='"+password.getText().toString()+"',GENDER='"+sGender+"',COUNTRY='"+sCountry+"' WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"'";
+                    db.execSQL(updateQuery);
+
+                    Toast.makeText(getActivity(), "Profile Update Successfully", Toast.LENGTH_SHORT).show();
+
+                    sp.edit().putString(ConstantSp.NAME,name.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.EMAIL,email.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.CONTACT,contact.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.PASSWORD,password.getText().toString()).commit();
+                    sp.edit().putString(ConstantSp.GENDER,sGender).commit();
+                    sp.edit().putString(ConstantSp.COUNTRY,sCountry).commit();
+
                     setData(false);
                     /*String selectQuery = "SELECT * FROM USERS WHERE EMAIL='"+email.getText().toString()+"' OR CONTACT='"+contact.getText().toString()+"'";
                     Cursor cursor = db.rawQuery(selectQuery,null);

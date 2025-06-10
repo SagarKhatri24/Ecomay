@@ -145,8 +145,14 @@
         <Button
             android:id="@+id/profile_logout"
             style="@style/button_14"
-            android:layout_marginVertical="@dimen/_30sdp"
+            android:layout_marginTop="@dimen/_30sdp"
             android:text="Logout" />
+
+        <Button
+            android:id="@+id/profile_delete"
+            style="@style/button_14"
+            android:layout_marginVertical="@dimen/_30sdp"
+            android:text="Delete Account" />
 
     </LinearLayout>
 </ScrollView>
