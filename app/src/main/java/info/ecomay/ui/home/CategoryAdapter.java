@@ -1,6 +1,10 @@
 package info.ecomay.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +17,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
+
+import info.ecomay.ConstantSp;
 import info.ecomay.R;
+import info.ecomay.SubCategoryActivity;
+import info.ecomay.SubCategoryAdapter;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHolder> {
 
     Context context;
-    String[] nameArray;
-    String[] imageArray;
+    ArrayList<CategoryList> arrayList;
+    SharedPreferences sp;
 
-    public CategoryAdapter(Context context, String[] nameArray, String[] imageArray) {
+    public CategoryAdapter(Context context,ArrayList<CategoryList> arrayList) {
         this.context = context;
-        this.nameArray = nameArray;
-        this.imageArray = imageArray;
+        this.arrayList = arrayList;
+        sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
     @NonNull
@@ -50,13 +59,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
-        holder.name.setText(nameArray[position]);
-        Glide.with(context).load(imageArray[position]).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+        holder.name.setText(arrayList.get(position).getName());
+        Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.CATEGORYID, String.valueOf(arrayList.get(position).getCategoryId())).commit();
+                Intent intent = new Intent(context, SubCategoryActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
     public int getItemCount() {
-        return nameArray.length;
+        return arrayList.size();
     }
 
 }

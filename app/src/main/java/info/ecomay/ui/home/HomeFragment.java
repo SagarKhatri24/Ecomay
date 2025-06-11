@@ -12,12 +12,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import java.util.ArrayList;
+
 import info.ecomay.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    int[] idArray = {1,2,3,4,5,6,7,8,9};
     String[] nameArray = {"Kilos","Mobiles","Fashion","Electronics","Home & Furniture","Appliances","Flight Bookings","Beauty, Toys & More","Two Wheelers"};
     String[] imageArray = {
             "https://rukminim2.flixcart.com/flap/80/80/image/29327f40e9c4d26b.png?q=100",
@@ -30,6 +33,8 @@ public class HomeFragment extends Fragment {
             "https://rukminim2.flixcart.com/flap/80/80/image/dff3f7adcf3a90c6.png?q=100",
             "https://rukminim2.flixcart.com/fk-p-flap/80/80/image/05d708653beff580.png?q=100"
     };
+
+    ArrayList<CategoryList> arrayList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -45,7 +50,15 @@ public class HomeFragment extends Fragment {
 
         binding.homeCategory.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
 
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(),nameArray,imageArray);
+        arrayList = new ArrayList<>();
+        for (int i=0;i<nameArray.length;i++){
+            CategoryList list = new CategoryList();
+            list.setCategoryId(idArray[i]);
+            list.setName(nameArray[i]);
+            list.setImage(imageArray[i]);
+            arrayList.add(list);
+        }
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList);
         binding.homeCategory.setAdapter(adapter);
 
         return root;
