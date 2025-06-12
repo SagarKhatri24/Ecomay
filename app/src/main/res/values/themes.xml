@@ -63,4 +63,26 @@
         <item name="buttonTint">@color/blue_dark</item>
     </style>
 
+    <style name="text_11" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">@dimen/_11sdp</item>
+    </style>
+
+    <style name="text_13" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">@dimen/_13sdp</item>
+    </style>
+
+    <style name="text_14" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/blue</item>
+        <item name="android:textSize">@dimen/_14sdp</item>
+    </style>
+
 </resources>

@@ -36,6 +36,65 @@ public class HomeFragment extends Fragment {
 
     ArrayList<CategoryList> arrayList;
 
+    int[] productIdArray = {1,2,3,4,5,6};
+    int[] subCategoryIdArray = {1,1,2,3,3,2};
+
+    String[] productImageArray = {
+            "https://rukminim2.flixcart.com/image/280/280/kfyasnk0/pulses/7/m/n/1-toor-dal-toor-dal-flipkart-supermart-classic-original-imafwaxgjm9rymzz.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/edible-oil/k/p/c/-original-imahadwr8ketn3du.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/kkec4280/ghee/1/x/b/1-ghee-12x1-ltr-pet-jar-mason-jar-amul-original-imafzqv6gggbhygv.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/flour/j/n/v/-original-imagm7w8jfn29hp2.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/spice-masala/t/h/j/100-ajwain-by-flipkart-grocery-pouch-1-classic-whole-original-imagthp5qgmzjfqf.jpeg?q=70",
+            "https://rukminim2.flixcart.com/image/280/280/xif0q/rice/4/o/n/-original-imah9258fw4s7xuq.jpeg?q=70"
+    };
+
+    String[] productNameArray = {
+            "Classic Toor/Arhar Dal (Tuver Dal) (Split) by Flipkart Grocery",
+            "FORTUNE Soya health refined Soyabean Oil Pouch (Soyabean nu Tel)",
+            "Amul Pure Ghee Ghee Plastic Bottle",
+            "AASHIRVAAD Shudh Chakki Atta (Akha Ghauno Lot)",
+            "Classic Ajwain by Flipkart Grocery",
+            "Tata Sampann High in Fibre (Pouva) (Thick) Poha"
+    };
+
+    String[] productNewPriceArray = {
+            "128",
+            "154",
+            "598",
+            "463",
+            "23",
+            "88"
+    };
+
+    String[] productOldPriceArray = {
+            "290",
+            "175",
+            "669",
+            "542",
+            "60",
+            "120"
+    };
+
+    String[] productDiscountArray = {
+            "55",
+            "12",
+            "10",
+            "14",
+            "61",
+            "26"
+    };
+
+    String[] productUnitArray = {
+            "1 kg",
+            "870 g",
+            "1 L Bottle",
+            "10 kg",
+            "100 g",
+            "1 kg"
+    };
+
+    ArrayList<ProductList> productArrayList;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -44,6 +103,35 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        categoryData();
+
+        productData();
+
+        return root;
+    }
+
+    private void productData() {
+
+        binding.homeProductRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        productArrayList = new ArrayList<>();
+        for(int i=0;i<productIdArray.length;i++){
+            ProductList list = new ProductList();
+            list.setProductId(productIdArray[i]);
+            list.setSubCategoryId(subCategoryIdArray[i]);
+            list.setName(productNameArray[i]);
+            list.setOldPrice(productOldPriceArray[i]);
+            list.setNewPrice(productNewPriceArray[i]);
+            list.setDiscount(productDiscountArray[i]);
+            list.setUnit(productUnitArray[i]);
+            list.setImage(productImageArray[i]);
+            productArrayList.add(list);
+        }
+        ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
+        binding.homeProductRecycler.setAdapter(adapter);
+    }
+
+    private void categoryData() {
         //binding.homeCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         //binding.homeCategory.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -60,8 +148,6 @@ public class HomeFragment extends Fragment {
         }
         CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList);
         binding.homeCategory.setAdapter(adapter);
-
-        return root;
     }
 
     @Override
