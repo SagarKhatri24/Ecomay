@@ -3,7 +3,7 @@ package info.ecomay.ui.home;
 public class ProductList {
 
     int productId,subCategoryId;
-    String image,name,newPrice,oldPrice,discount,unit;
+    String image,name,newPrice,oldPrice,discount,unit,description;
 
     public int getProductId() {
         return productId;
@@ -35,6 +35,14 @@ public class ProductList {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getNewPrice() {

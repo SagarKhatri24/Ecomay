@@ -1,7 +1,11 @@
 package info.ecomay;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +15,8 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -33,6 +39,8 @@ public class SubCategoryActivity extends AppCompatActivity {
     ArrayList<SubCategoryList> arrayList;
     SharedPreferences sp;
 
+    ImageView defaultImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +53,8 @@ public class SubCategoryActivity extends AppCompatActivity {
         });
 
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        defaultImage = findViewById(R.id.sub_category_image);
 
         recyclerView = findViewById(R.id.sub_category_recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
@@ -62,5 +72,22 @@ public class SubCategoryActivity extends AppCompatActivity {
         }
         SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList);
         recyclerView.setAdapter(adapter);
+
+        if(arrayList.size()>0){
+            defaultImage.setVisibility(GONE);
+            recyclerView.setVisibility(VISIBLE);
+        }
+        else{
+            defaultImage.setVisibility(VISIBLE);
+            recyclerView.setVisibility(GONE);
+        }
+
+        Glide
+                .with(SubCategoryActivity.this)
+                .asGif()
+                .load("https://assets-v2.lottiefiles.com/a/0e30b444-117c-11ee-9b0d-0fd3804d46cd/BkQxD7wtnZ.gif")
+                .placeholder(R.mipmap.ic_launcher)
+                .into(defaultImage);
+
     }
 }

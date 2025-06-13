@@ -1,6 +1,10 @@
 package info.ecomay;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +22,12 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
 
     Context context;
     ArrayList<SubCategoryList> arrayList;
+    SharedPreferences sp;
 
     public SubCategoryAdapter(Context context, ArrayList<SubCategoryList> arrayList) {
         this.context = context;
         this.arrayList = arrayList;
+        sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
     @NonNull
@@ -47,6 +53,16 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
         holder.name.setText(arrayList.get(position).getName());
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.SUBCATEGORYID, String.valueOf(arrayList.get(position).getSubCategoryId())).commit();
+                Intent intent = new Intent(context, ProductActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override

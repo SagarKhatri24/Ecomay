@@ -1,6 +1,10 @@
 package info.ecomay.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +21,19 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import info.ecomay.ConstantSp;
+import info.ecomay.ProductDetailActivity;
 import info.ecomay.R;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder> {
 
     Context context;
     ArrayList<ProductList> arrayList;
+    SharedPreferences sp;
 
     public ProductAdapter(Context context, ArrayList<ProductList> productArrayList) {
         this.context = context;
         this.arrayList = productArrayList;
+        sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
     @NonNull
@@ -65,6 +72,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
         holder.unit.setText(arrayList.get(position).getUnit());
 
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.PRODUCTID, String.valueOf(arrayList.get(position).getProductId())).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_NAME,arrayList.get(position).getName()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_OLDPRICE,arrayList.get(position).getOldPrice()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_NEWPRICE,arrayList.get(position).getNewPrice()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_DISCOUNT,arrayList.get(position).getDiscount()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_UNIT,arrayList.get(position).getUnit()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_IMAGE,arrayList.get(position).getImage()).commit();
+                sp.edit().putString(ConstantSp.PRODUCT_DESCRIPTION,arrayList.get(position).getDescription()).commit();
+
+                Intent intent = new Intent(context, ProductDetailActivity.class);
+                context.startActivity(intent);
+
+            }
+        });
 
     }
 
