@@ -1,5 +1,8 @@
 package info.ecomay.ui.home;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,6 +106,7 @@ public class HomeFragment extends Fragment {
     };
 
     ArrayList<ProductList> productArrayList;
+    SQLiteDatabase db;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -111,6 +115,19 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        db = getActivity().openOrCreateDatabase("Ecomay.db", Context.MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(100), EMAIL VARCHAR(100), CONTACT INTEGER(10),PASSWORD VARCHAR(20),GENDER VARCHAR(10),COUNTRY VARCHAR(20))";
+        db.execSQL(tableQuery);
+
+        String categoryTableQuery = "CREATE TABLE IF NOT EXISTS CATEGORY (CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),IMAGE VARCHAR(100))";
+        db.execSQL(categoryTableQuery);
+
+        String subCategoryTableQuery = "CREATE TABLE IF NOT EXISTS SUBCATEGORY (SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(100))";
+        db.execSQL(subCategoryTableQuery);
+
+        String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(100),DESCRIPTION TEXT,OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(10),UNIT VARCHAR(10))";
+        db.execSQL(productTableQuery);
 
         categoryData();
 
@@ -125,7 +142,7 @@ public class HomeFragment extends Fragment {
         binding.homeProductRecycler.setNestedScrollingEnabled(false);
 
         productArrayList = new ArrayList<>();
-        for(int i=0;i<productIdArray.length;i++){
+        /*for(int i=0;i<productIdArray.length;i++){
             ProductList list = new ProductList();
             list.setProductId(productIdArray[i]);
             list.setSubCategoryId(subCategoryIdArray[i]);
@@ -137,6 +154,23 @@ public class HomeFragment extends Fragment {
             list.setUnit(productUnitArray[i]);
             list.setImage(productImageArray[i]);
             productArrayList.add(list);
+        }*/
+        String selectQuery = "SELECT * FROM PRODUCT";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if (cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                ProductList list = new ProductList();
+                list.setProductId(Integer.parseInt(cursor.getString(0)));
+                list.setSubCategoryId(Integer.parseInt(cursor.getString(1)));
+                list.setName(cursor.getString(2));
+                list.setDescription(cursor.getString(4));
+                list.setOldPrice(cursor.getString(5));
+                list.setNewPrice(cursor.getString(6));
+                list.setDiscount(cursor.getString(7));
+                list.setUnit(cursor.getString(8));
+                list.setImage(cursor.getString(3));
+                productArrayList.add(list);
+            }
         }
         ProductAdapter adapter = new ProductAdapter(getActivity(),productArrayList);
         binding.homeProductRecycler.setAdapter(adapter);
@@ -150,12 +184,23 @@ public class HomeFragment extends Fragment {
         binding.homeCategory.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
 
         arrayList = new ArrayList<>();
-        for (int i=0;i<nameArray.length;i++){
+        /*for (int i=0;i<nameArray.length;i++){
             CategoryList list = new CategoryList();
             list.setCategoryId(idArray[i]);
             list.setName(nameArray[i]);
             list.setImage(imageArray[i]);
             arrayList.add(list);
+        }*/
+        String selectQuery = "SELECT * FROM CATEGORY";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                CategoryList list = new CategoryList();
+                list.setCategoryId(Integer.parseInt(cursor.getString(0)));
+                list.setName(cursor.getString(1));
+                list.setImage(cursor.getString(2));
+                arrayList.add(list);
+            }
         }
         CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList);
         binding.homeCategory.setAdapter(adapter);

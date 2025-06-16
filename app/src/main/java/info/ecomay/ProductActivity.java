@@ -4,6 +4,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -98,6 +100,8 @@ public class ProductActivity extends AppCompatActivity {
 
     SharedPreferences sp;
 
+    SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +113,19 @@ public class ProductActivity extends AppCompatActivity {
             return insets;
         });
 
+        db = openOrCreateDatabase("Ecomay.db",MODE_PRIVATE,null);
+        String tableQuery = "CREATE TABLE IF NOT EXISTS USERS (USERID INTEGER PRIMARY KEY AUTOINCREMENT, NAME VARCHAR(100), EMAIL VARCHAR(100), CONTACT INTEGER(10),PASSWORD VARCHAR(20),GENDER VARCHAR(10),COUNTRY VARCHAR(20))";
+        db.execSQL(tableQuery);
+
+        String categoryTableQuery = "CREATE TABLE IF NOT EXISTS CATEGORY (CATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,NAME VARCHAR(100),IMAGE VARCHAR(100))";
+        db.execSQL(categoryTableQuery);
+
+        String subCategoryTableQuery = "CREATE TABLE IF NOT EXISTS SUBCATEGORY (SUBCATEGORYID INTEGER PRIMARY KEY AUTOINCREMENT,CATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(100))";
+        db.execSQL(subCategoryTableQuery);
+
+        String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(100),DESCRIPTION TEXT,OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(10),UNIT VARCHAR(10))";
+        db.execSQL(productTableQuery);
+
         sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
         defaultImage = findViewById(R.id.product_image);
@@ -119,7 +136,7 @@ public class ProductActivity extends AppCompatActivity {
         recyclerView.setNestedScrollingEnabled(false);
 
         productArrayList = new ArrayList<>();
-        for (int i = 0; i < productIdArray.length; i++) {
+        /*for (int i = 0; i < productIdArray.length; i++) {
             if (sp.getString(ConstantSp.SUBCATEGORYID, "").equals(String.valueOf(subCategoryIdArray[i]))) {
                 ProductList list = new ProductList();
                 list.setProductId(productIdArray[i]);
@@ -131,6 +148,23 @@ public class ProductActivity extends AppCompatActivity {
                 list.setDiscount(productDiscountArray[i]);
                 list.setUnit(productUnitArray[i]);
                 list.setImage(productImageArray[i]);
+                productArrayList.add(list);
+            }
+        }*/
+        String selectQuery = "SELECT * FROM PRODUCT WHERE SUBCATEGORYID='"+sp.getString(ConstantSp.SUBCATEGORYID,"")+"'";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if (cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                ProductList list = new ProductList();
+                list.setProductId(Integer.parseInt(cursor.getString(0)));
+                list.setSubCategoryId(Integer.parseInt(cursor.getString(1)));
+                list.setName(cursor.getString(2));
+                list.setDescription(cursor.getString(4));
+                list.setOldPrice(cursor.getString(5));
+                list.setNewPrice(cursor.getString(6));
+                list.setDiscount(cursor.getString(7));
+                list.setUnit(cursor.getString(8));
+                list.setImage(cursor.getString(3));
                 productArrayList.add(list);
             }
         }
