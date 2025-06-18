@@ -26,10 +26,29 @@
             android:layout_marginLeft="@dimen/_10sdp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/custom_product_name"
-                style="@style/text_13"
-                android:textColor="@color/black" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:id="@+id/custom_product_wishlist"
+                    android:layout_width="@dimen/_20sdp"
+                    android:layout_height="@dimen/_20sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:padding="@dimen/_2sdp"
+                    android:src="@drawable/wishlist_blank" />
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_width="match_parent"
+                    android:layout_toLeftOf="@id/custom_product_wishlist"
+                    android:id="@+id/custom_product_name"
+                    style="@style/text_13"
+                    android:textColor="@color/black" />
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,9 +93,9 @@
                     app:cardElevation="@dimen/_2sdp">
 
                     <TextView
-                        android:gravity="center"
                         android:id="@+id/custom_product_unit"
                         style="@style/text_11"
+                        android:gravity="center"
                         android:padding="@dimen/_5sdp"
                         android:textColor="@color/black"
                         android:textStyle="bold" />

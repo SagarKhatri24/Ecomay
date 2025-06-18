@@ -5,6 +5,8 @@ import static android.content.Context.MODE_PRIVATE;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import info.ecomay.ConstantSp;
@@ -29,11 +31,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
     Context context;
     ArrayList<ProductList> arrayList;
     SharedPreferences sp;
+    SQLiteDatabase db;
 
-    public ProductAdapter(Context context, ArrayList<ProductList> productArrayList) {
+    public ProductAdapter(Context context, ArrayList<ProductList> productArrayList, SQLiteDatabase db) {
         this.context = context;
         this.arrayList = productArrayList;
+        this.db = db;
         sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+    }
+
+    public void updateList(ArrayList<ProductList> arrayList){
+        this.arrayList = arrayList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -45,7 +54,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
 
     public class MyHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
+        ImageView imageView,wishlist;
         TextView name,newPrice,oldPrice,discount,unit,addItem;
 
         public MyHolder(@NonNull View itemView) {
@@ -58,6 +67,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
             discount = itemView.findViewById(R.id.custom_product_discount);
             unit = itemView.findViewById(R.id.custom_product_unit);
             addItem = itemView.findViewById(R.id.custom_product_add_item);
+            wishlist = itemView.findViewById(R.id.custom_product_wishlist);
         }
     }
 
@@ -72,6 +82,38 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
         holder.unit.setText(arrayList.get(position).getUnit());
 
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+
+        if(arrayList.get(position).getWishlistId()==0){
+            holder.wishlist.setImageResource(R.drawable.wishlist_blank);
+        }
+        else{
+            holder.wishlist.setImageResource(R.drawable.wishlist_fill);
+        }
+
+        holder.wishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(arrayList.get(position).getWishlistId()==0){
+                    String insertQuery = "INSERT INTO WISHLIST VALUES (NULL,'"+sp.getString(ConstantSp.USERID,"")+"','"+arrayList.get(position).getProductId()+"')";
+                    db.execSQL(insertQuery);
+                    holder.wishlist.setImageResource(R.drawable.wishlist_fill);
+
+                    String selectQuery = "SELECT MAX(WISHLISTID) FROM WISHLIST LIMIT 1";
+                    Cursor cursor = db.rawQuery(selectQuery,null);
+                    if(cursor.getCount()>0){
+                        while (cursor.moveToNext()){
+                            doUpdateList(position, Integer.parseInt(cursor.getString(0)));
+                        }
+                    }
+                }
+                else{
+                    String deleteQuery = "DELETE FROM WISHLIST WHERE WISHLISTID='"+arrayList.get(position).getWishlistId()+"'";
+                    db.execSQL(deleteQuery);
+                    holder.wishlist.setImageResource(R.drawable.wishlist_blank);
+                    doUpdateList(position,0);
+                }
+            }
+        });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +133,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
             }
         });
 
+    }
+
+    private void doUpdateList(int position, int wishlistId) {
+        ProductList list = new ProductList();
+        list.setProductId(arrayList.get(position).getProductId());
+        list.setSubCategoryId(arrayList.get(position).getSubCategoryId());
+        list.setName(arrayList.get(position).getName());
+        list.setDescription(arrayList.get(position).getDescription());
+        list.setOldPrice(arrayList.get(position).getOldPrice());
+        list.setNewPrice(arrayList.get(position).getNewPrice());
+        list.setDiscount(arrayList.get(position).getDiscount());
+        list.setUnit(arrayList.get(position).getUnit());
+        list.setImage(arrayList.get(position).getImage());
+        list.setWishlistId(wishlistId);
+        arrayList.set(position,list);
+        notifyItemChanged(position);
     }
 
     @Override

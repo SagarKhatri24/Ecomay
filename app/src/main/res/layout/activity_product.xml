@@ -7,17 +7,26 @@
     android:layout_height="match_parent"
     tools:context=".ProductActivity">
 
+    <SearchView
+        android:id="@+id/product_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_20sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:queryHint="Search Product" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/product_search" />
 
     <ImageView
-        android:visibility="gone"
-        android:src="@mipmap/ic_launcher"
         android:id="@+id/product_image"
-        android:layout_centerInParent="true"
         android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_200sdp"/>
+        android:layout_height="@dimen/_200sdp"
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone" />
 
 </RelativeLayout>

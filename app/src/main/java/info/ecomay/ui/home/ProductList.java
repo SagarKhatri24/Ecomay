@@ -2,8 +2,16 @@ package info.ecomay.ui.home;
 
 public class ProductList {
 
-    int productId,subCategoryId;
+    int productId,subCategoryId,wishlistId;
     String image,name,newPrice,oldPrice,discount,unit,description;
+
+    public int getWishlistId() {
+        return wishlistId;
+    }
+
+    public void setWishlistId(int wishlistId) {
+        this.wishlistId = wishlistId;
+    }
 
     public int getProductId() {
         return productId;

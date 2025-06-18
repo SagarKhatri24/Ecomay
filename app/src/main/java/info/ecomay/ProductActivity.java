@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.SearchView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,9 +99,12 @@ public class ProductActivity extends AppCompatActivity {
 
     ImageView defaultImage;
 
+    SearchView searchView;
+
     SharedPreferences sp;
 
     SQLiteDatabase db;
+    ProductAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +130,14 @@ public class ProductActivity extends AppCompatActivity {
         String productTableQuery = "CREATE TABLE IF NOT EXISTS PRODUCT (PRODUCTID INTEGER PRIMARY KEY AUTOINCREMENT,SUBCATEGORYID VARCHAR(10),NAME VARCHAR(100),IMAGE VARCHAR(100),DESCRIPTION TEXT,OLDPRICE VARCHAR(10),NEWPRICE VARCHAR(10),DISCOUNT VARCHAR(10),UNIT VARCHAR(10))";
         db.execSQL(productTableQuery);
 
+        String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT,USERID VARCHAR(10),PRODUCTID VARCHAR(10))";
+        db.execSQL(wishlistTableQuery);
+
         sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
         defaultImage = findViewById(R.id.product_image);
+
+        searchView = findViewById(R.id.product_search);
 
         recyclerView = findViewById(R.id.product_recycler);
 
@@ -165,20 +174,45 @@ public class ProductActivity extends AppCompatActivity {
                 list.setDiscount(cursor.getString(7));
                 list.setUnit(cursor.getString(8));
                 list.setImage(cursor.getString(3));
+                String selectWishlistQuery = "SELECT * FROM WISHLIST WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"'";
+                Cursor wishlistCursor = db.rawQuery(selectWishlistQuery,null);
+                if(wishlistCursor.getCount()>0){
+                    while (wishlistCursor.moveToNext()){
+                        list.setWishlistId(Integer.parseInt(wishlistCursor.getString(0)));
+                    }
+                }
+                else{
+                    list.setWishlistId(0);
+                }
                 productArrayList.add(list);
             }
         }
-        ProductAdapter adapter = new ProductAdapter(ProductActivity.this, productArrayList);
+        adapter = new ProductAdapter(ProductActivity.this, productArrayList, db);
         recyclerView.setAdapter(adapter);
 
         if(productArrayList.size()>0){
             defaultImage.setVisibility(GONE);
             recyclerView.setVisibility(VISIBLE);
+            searchView.setVisibility(VISIBLE);
         }
         else{
             defaultImage.setVisibility(VISIBLE);
             recyclerView.setVisibility(GONE);
+            searchView.setVisibility(GONE);
         }
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                productFilter(s);
+                return false;
+            }
+        });
 
         Glide
                 .with(ProductActivity.this)
@@ -187,5 +221,15 @@ public class ProductActivity extends AppCompatActivity {
                 .placeholder(R.mipmap.ic_launcher)
                 .into(defaultImage);
 
+    }
+
+    private void productFilter(String s) {
+        ArrayList<ProductList> tempList = new ArrayList<>();
+        for(ProductList list : productArrayList){
+            if(list.getName().toLowerCase().contains(s.toLowerCase())){
+                tempList.add(list);
+            }
+        }
+        adapter.updateList(tempList);
     }
 }
