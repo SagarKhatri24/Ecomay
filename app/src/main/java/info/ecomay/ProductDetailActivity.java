@@ -68,6 +68,9 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
         String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT,USERID VARCHAR(10),PRODUCTID VARCHAR(10))";
         db.execSQL(wishlistTableQuery);
 
+        String cartTableQuery = "CREATE TABLE IF NOT EXISTS CART (CARTID INTEGER PRIMARY KEY AUTOINCREMENT,ORDERID VARCHAR(10), USERID VARCHAR(10),PRODUCTID VARCHAR(10),PRICE VARCHAR(20), QTY VARCHAR(10), TOTAL VARCHAR(20))";
+        db.execSQL(cartTableQuery);
+
         imageView = findViewById(R.id.product_detail_image);
         name = findViewById(R.id.product_detail_name);
         newPrice = findViewById(R.id.product_detail_new_price);
@@ -125,6 +128,16 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
             @Override
             public void onClick(View view) {
                 startPayment();
+            }
+        });
+
+        addItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int iQty = 1;
+                int iTotal = Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEWPRICE,""))* iQty;
+                String insertQuery = "INSERT INTO CART VALUES(NULL,'0','"+sp.getString(ConstantSp.USERID,"")+"','"+sp.getString(ConstantSp.PRODUCTID,"")+"','"+sp.getString(ConstantSp.PRODUCT_NEWPRICE,"")+"','"+iQty+"','"+iTotal+"')";
+                db.execSQL(insertQuery);
             }
         });
 
