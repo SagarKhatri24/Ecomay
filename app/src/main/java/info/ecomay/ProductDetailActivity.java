@@ -1,5 +1,8 @@
 package info.ecomay;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +41,13 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
     Button buyNow;
     SQLiteDatabase db;
     boolean isWishlist = false;
+
+    RelativeLayout cartLayout;
+    ImageView plus,minus;
+    TextView qty;
+
+    int iQty = 0;
+    String sCartId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +90,11 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
         unit = findViewById(R.id.product_detail_unit);
         addItem = findViewById(R.id.product_detail_add_item);
         description = findViewById(R.id.product_detail_description);
+
+        cartLayout = findViewById(R.id.product_detail_cart_layout);
+        plus = findViewById(R.id.product_detail_plus);
+        minus = findViewById(R.id.product_detail_minus);
+        qty = findViewById(R.id.product_detail_qty);
 
         name.setText(sp.getString(ConstantSp.PRODUCT_NAME,""));
         newPrice.setText(ConstantSp.PRICE_SYMBOL+sp.getString(ConstantSp.PRODUCT_NEWPRICE,""));
@@ -131,16 +147,77 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
             }
         });
 
+        String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+sp.getString(ConstantSp.PRODUCTID,"")+"' AND ORDERID='0'";
+        Cursor cartCursor = db.rawQuery(selectCartQuery,null);
+        if(cartCursor.getCount()>0){
+            addItem.setVisibility(GONE);
+            cartLayout.setVisibility(VISIBLE);
+            while (cartCursor.moveToNext()){
+                sCartId = cartCursor.getString(0);
+                iQty = Integer.parseInt(cartCursor.getString(5));
+                qty.setText(String.valueOf(iQty));
+            }
+        }
+        else{
+            addItem.setVisibility(VISIBLE);
+            cartLayout.setVisibility(GONE);
+        }
+
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int iQty = 1;
+                iQty = 1;
                 int iTotal = Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEWPRICE,""))* iQty;
                 String insertQuery = "INSERT INTO CART VALUES(NULL,'0','"+sp.getString(ConstantSp.USERID,"")+"','"+sp.getString(ConstantSp.PRODUCTID,"")+"','"+sp.getString(ConstantSp.PRODUCT_NEWPRICE,"")+"','"+iQty+"','"+iTotal+"')";
                 db.execSQL(insertQuery);
+
+                String selectQuery = "SELECT MAX(CARTID) FROM CART LIMIT 1";
+                Cursor cursor = db.rawQuery(selectQuery,null);
+                if(cursor.getCount()>0){
+                    while (cursor.moveToNext()){
+                        sCartId = cursor.getString(0);
+                    }
+                }
+                qty.setText(String.valueOf(iQty));
+                addItem.setVisibility(GONE);
+                cartLayout.setVisibility(VISIBLE);
             }
         });
 
+        plus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iQty +=1; //iQty = iQty+1
+                updateCart();
+            }
+        });
+
+        minus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iQty -=1;
+                if(iQty<=0){
+                    deleteCart();
+                }
+                else{
+                    updateCart();
+                }
+            }
+        });
+
+    }
+
+    private void deleteCart() {
+        String deleteCartQuery = "DELETE FROM CART WHERE CARTID='"+sCartId+"'";
+        db.execSQL(deleteCartQuery);
+        addItem.setVisibility(VISIBLE);
+        cartLayout.setVisibility(GONE);
+    }
+
+    private void updateCart() {
+        String updateCartQuery = "UPDATE CART SET QTY='"+iQty+"' WHERE CARTID='"+sCartId+"'";
+        db.execSQL(updateCartQuery);
+        qty.setText(String.valueOf(iQty));
     }
 
     private void startPayment() {

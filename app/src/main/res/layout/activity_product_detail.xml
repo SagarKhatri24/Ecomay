@@ -99,7 +99,7 @@
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_marginHorizontal="@dimen/_5sdp"
                             android:layout_marginVertical="@dimen/_3sdp"
                             android:layout_weight="1"
@@ -111,7 +111,41 @@
                                 style="@style/text_11"
                                 android:padding="@dimen/_5sdp"
                                 android:text="Add Item"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+                            <RelativeLayout
+                                android:visibility="gone"
+                                android:id="@+id/product_detail_cart_layout"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:padding="@dimen/_3sdp">
+
+                                <ImageView
+                                    android:layout_alignParentRight="true"
+                                    android:src="@drawable/plus"
+                                    android:id="@+id/product_detail_plus"
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="@dimen/_20sdp" />
+
+                                <ImageView
+                                    android:src="@drawable/minus"
+                                    android:id="@+id/product_detail_minus"
+                                    android:layout_width="@dimen/_20sdp"
+                                    android:layout_height="@dimen/_20sdp" />
+
+                                <TextView
+                                    android:textColor="@color/black"
+                                    android:id="@+id/product_detail_qty"
+                                    style="@style/text_13"
+                                    android:layout_width="match_parent"
+                                    android:layout_toLeftOf="@id/product_detail_plus"
+                                    android:layout_toRightOf="@id/product_detail_minus"
+                                    android:gravity="center"
+                                    android:textStyle="bold" />
+
+                            </RelativeLayout>
 
                         </androidx.cardview.widget.CardView>
 
