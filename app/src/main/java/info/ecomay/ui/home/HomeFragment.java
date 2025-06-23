@@ -194,6 +194,19 @@ public class HomeFragment extends Fragment {
                 else{
                     list.setWishlistId(0);
                 }
+
+                String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"'";
+                Cursor cartCursor = db.rawQuery(selectCartQuery,null);
+                if(cartCursor.getCount()>0){
+                    while (cartCursor.moveToNext()){
+                        list.setCartId(Integer.parseInt(cartCursor.getString(0)));
+                        list.setQty(Integer.parseInt(cartCursor.getString(5)));
+                    }
+                }
+                else{
+                    list.setCartId(0);
+                    list.setQty(0);
+                }
                 productArrayList.add(list);
             }
         }

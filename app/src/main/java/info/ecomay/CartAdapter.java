@@ -1,4 +1,4 @@
-package info.ecomay.ui.home;
+package info.ecomay;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
@@ -22,66 +22,61 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import info.ecomay.ConstantSp;
-import info.ecomay.ProductDetailActivity;
-import info.ecomay.R;
+import info.ecomay.ui.home.ProductList;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder> {
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyHolder> {
 
     Context context;
-    ArrayList<ProductList> arrayList;
+    ArrayList<CartList> arrayList;
     SharedPreferences sp;
     SQLiteDatabase db;
 
-    public ProductAdapter(Context context, ArrayList<ProductList> productArrayList, SQLiteDatabase db) {
+    public CartAdapter(Context context, ArrayList<CartList> productArrayList, SQLiteDatabase db) {
         this.context = context;
         this.arrayList = productArrayList;
         this.db = db;
         sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
-    public void updateList(ArrayList<ProductList> arrayList){
+    public void updateList(ArrayList<CartList> arrayList){
         this.arrayList = arrayList;
         notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_product,parent,false);
-        return new MyHolder(view);
+    public CartAdapter.MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_cart,parent,false);
+        return new CartAdapter.MyHolder(view);
     }
 
     public class MyHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView,wishlist,minus,plus;
-        TextView name,newPrice,oldPrice,discount,unit,addItem,qty;
+        ImageView imageView,minus,plus;
+        TextView name,newPrice,oldPrice,discount,unit,qty;
         RelativeLayout cartLayout;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.custom_product_image);
-            name = itemView.findViewById(R.id.custom_product_name);
-            newPrice = itemView.findViewById(R.id.custom_product_new_price);
-            oldPrice = itemView.findViewById(R.id.custom_product_old_price);
-            discount = itemView.findViewById(R.id.custom_product_discount);
-            unit = itemView.findViewById(R.id.custom_product_unit);
-            addItem = itemView.findViewById(R.id.custom_product_add_item);
-            wishlist = itemView.findViewById(R.id.custom_product_wishlist);
-
-            minus = itemView.findViewById(R.id.custom_product_minus);
-            plus = itemView.findViewById(R.id.custom_product_plus);
-            qty = itemView.findViewById(R.id.custom_product_qty);
-            cartLayout = itemView.findViewById(R.id.custom_product_cart_layout);
+            imageView = itemView.findViewById(R.id.custom_cart_image);
+            name = itemView.findViewById(R.id.custom_cart_name);
+            newPrice = itemView.findViewById(R.id.custom_cart_new_price);
+            oldPrice = itemView.findViewById(R.id.custom_cart_old_price);
+            discount = itemView.findViewById(R.id.custom_cart_discount);
+            unit = itemView.findViewById(R.id.custom_cart_unit);
+            
+            minus = itemView.findViewById(R.id.custom_cart_minus);
+            plus = itemView.findViewById(R.id.custom_cart_plus);
+            qty = itemView.findViewById(R.id.custom_cart_qty);
+            cartLayout = itemView.findViewById(R.id.custom_cart_cart_layout);
 
         }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CartAdapter.MyHolder holder, int position) {
         holder.name.setText(arrayList.get(position).getName());
         holder.newPrice.setText(ConstantSp.PRICE_SYMBOL+arrayList.get(position).getNewPrice());
         holder.oldPrice.setText(ConstantSp.PRICE_SYMBOL+arrayList.get(position).getOldPrice());
@@ -92,69 +87,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
 
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
 
-        if(arrayList.get(position).getWishlistId()==0){
-            holder.wishlist.setImageResource(R.drawable.wishlist_blank);
-        }
-        else{
-            holder.wishlist.setImageResource(R.drawable.wishlist_fill);
-        }
-
-        holder.wishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(arrayList.get(position).getWishlistId()==0){
-                    String insertQuery = "INSERT INTO WISHLIST VALUES (NULL,'"+sp.getString(ConstantSp.USERID,"")+"','"+arrayList.get(position).getProductId()+"')";
-                    db.execSQL(insertQuery);
-                    holder.wishlist.setImageResource(R.drawable.wishlist_fill);
-
-                    String selectQuery = "SELECT MAX(WISHLISTID) FROM WISHLIST LIMIT 1";
-                    Cursor cursor = db.rawQuery(selectQuery,null);
-                    if(cursor.getCount()>0){
-                        while (cursor.moveToNext()){
-                            doUpdateList(position, Integer.parseInt(cursor.getString(0)));
-                        }
-                    }
-                }
-                else{
-                    String deleteQuery = "DELETE FROM WISHLIST WHERE WISHLISTID='"+arrayList.get(position).getWishlistId()+"'";
-                    db.execSQL(deleteQuery);
-                    holder.wishlist.setImageResource(R.drawable.wishlist_blank);
-                    doUpdateList(position,0);
-                }
-            }
-        });
-
-        if(arrayList.get(position).getCartId()==0){
-            holder.addItem.setVisibility(VISIBLE);
-            holder.cartLayout.setVisibility(GONE);
-        }
-        else{
-            holder.addItem.setVisibility(GONE);
-            holder.cartLayout.setVisibility(VISIBLE);
-        }
-
         holder.qty.setText(String.valueOf(arrayList.get(position).getQty()));
-
-        holder.addItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int iQty = 1;
-                int iTotal = Integer.parseInt(arrayList.get(position).getNewPrice())* iQty;
-                String insertQuery = "INSERT INTO CART VALUES(NULL,'0','"+sp.getString(ConstantSp.USERID,"")+"','"+arrayList.get(position).getProductId()+"','"+arrayList.get(position).getNewPrice()+"','"+iQty+"','"+iTotal+"')";
-                db.execSQL(insertQuery);
-
-                int iCartId = 0;
-                String selectQuery = "SELECT MAX(CARTID) FROM CART LIMIT 1";
-                Cursor cursor = db.rawQuery(selectQuery,null);
-                if(cursor.getCount()>0){
-                    while (cursor.moveToNext()){
-                        iCartId = Integer.parseInt(cursor.getString(0));
-                    }
-                }
-                holder.qty.setText(String.valueOf(iQty));
-                doUpdateCartList(position,iCartId,iQty);
-            }
-        });
 
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +117,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
                     String deleteQuery = "DELETE FROM CART WHERE CARTID='"+arrayList.get(position).getCartId()+"'";
                     db.execSQL(deleteQuery);
                     holder.qty.setText(String.valueOf(iQty));
-                    doUpdateCartList(position,0,0);
+                    arrayList.remove(position);
+                    notifyDataSetChanged();
+                    //doUpdateCartList(position,0,0);
                 }
             }
         });
@@ -210,7 +145,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
     }
 
     private void doUpdateCartList(int position, int cartId, int qty) {
-        ProductList list = new ProductList();
+        CartList list = new CartList();
         list.setProductId(arrayList.get(position).getProductId());
         list.setSubCategoryId(arrayList.get(position).getSubCategoryId());
         list.setName(arrayList.get(position).getName());
@@ -220,27 +155,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
         list.setDiscount(arrayList.get(position).getDiscount());
         list.setUnit(arrayList.get(position).getUnit());
         list.setImage(arrayList.get(position).getImage());
-        list.setWishlistId(arrayList.get(position).getWishlistId());
         list.setCartId(cartId);
         list.setQty(qty);
-        arrayList.set(position,list);
-        notifyItemChanged(position);
-    }
-
-    private void doUpdateList(int position, int wishlistId) {
-        ProductList list = new ProductList();
-        list.setProductId(arrayList.get(position).getProductId());
-        list.setSubCategoryId(arrayList.get(position).getSubCategoryId());
-        list.setName(arrayList.get(position).getName());
-        list.setDescription(arrayList.get(position).getDescription());
-        list.setOldPrice(arrayList.get(position).getOldPrice());
-        list.setNewPrice(arrayList.get(position).getNewPrice());
-        list.setDiscount(arrayList.get(position).getDiscount());
-        list.setUnit(arrayList.get(position).getUnit());
-        list.setImage(arrayList.get(position).getImage());
-        list.setWishlistId(wishlistId);
-        list.setCartId(arrayList.get(position).getCartId());
-        list.setQty(arrayList.get(position).getQty());
         arrayList.set(position,list);
         notifyItemChanged(position);
     }
@@ -250,3 +166,4 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
         return arrayList.size();
     }
 }
+

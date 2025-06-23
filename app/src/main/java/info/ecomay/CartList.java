@@ -1,33 +1,9 @@
-package info.ecomay.ui.home;
+package info.ecomay;
 
-public class ProductList {
+public class CartList {
 
-    int productId,subCategoryId,wishlistId,cartId,qty;
+    int productId,subCategoryId,cartId,qty;
     String image,name,newPrice,oldPrice,discount,unit,description;
-
-    public int getQty() {
-        return qty;
-    }
-
-    public void setQty(int qty) {
-        this.qty = qty;
-    }
-
-    public int getCartId() {
-        return cartId;
-    }
-
-    public void setCartId(int cartId) {
-        this.cartId = cartId;
-    }
-
-    public int getWishlistId() {
-        return wishlistId;
-    }
-
-    public void setWishlistId(int wishlistId) {
-        this.wishlistId = wishlistId;
-    }
 
     public int getProductId() {
         return productId;
@@ -45,6 +21,22 @@ public class ProductList {
         this.subCategoryId = subCategoryId;
     }
 
+    public int getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(int cartId) {
+        this.cartId = cartId;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
     public String getImage() {
         return image;
     }
@@ -59,14 +51,6 @@ public class ProductList {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getNewPrice() {
@@ -99,5 +83,13 @@ public class ProductList {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

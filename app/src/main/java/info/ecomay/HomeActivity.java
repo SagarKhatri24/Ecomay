@@ -53,6 +53,10 @@ public class HomeActivity extends AppCompatActivity {
             Intent intent = new Intent(HomeActivity.this,WishlistActivity.class);
             startActivity(intent);
         }
+        if(id==R.id.home_cart){
+            Intent intent = new Intent(HomeActivity.this,CartActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

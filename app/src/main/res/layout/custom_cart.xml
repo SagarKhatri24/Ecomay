@@ -15,7 +15,7 @@
         android:padding="@dimen/_5sdp">
 
         <ImageView
-            android:id="@+id/custom_product_image"
+            android:id="@+id/custom_cart_image"
             android:layout_width="@dimen/_70sdp"
             android:layout_height="@dimen/_70sdp"
             android:layout_gravity="center" />
@@ -30,21 +30,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_centerVertical="true"
-                    android:id="@+id/custom_product_wishlist"
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:padding="@dimen/_2sdp"
-                    android:src="@drawable/wishlist_blank" />
-
                 <TextView
                     android:layout_centerVertical="true"
                     android:layout_width="match_parent"
-                    android:layout_toLeftOf="@id/custom_product_wishlist"
-                    android:id="@+id/custom_product_name"
+                    android:id="@+id/custom_cart_name"
                     style="@style/text_13"
                     android:textColor="@color/black" />
 
@@ -58,20 +47,20 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/custom_product_new_price"
+                    android:id="@+id/custom_cart_new_price"
                     style="@style/text_14"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/custom_product_old_price"
+                    android:id="@+id/custom_cart_old_price"
                     style="@style/text_13"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:textColor="@color/black_gray" />
 
                 <TextView
-                    android:id="@+id/custom_product_discount"
+                    android:id="@+id/custom_cart_discount"
                     style="@style/text_12"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:textColor="@color/green"
@@ -93,7 +82,7 @@
                     app:cardElevation="@dimen/_2sdp">
 
                     <TextView
-                        android:id="@+id/custom_product_unit"
+                        android:id="@+id/custom_cart_unit"
                         style="@style/text_11"
                         android:gravity="center"
                         android:padding="@dimen/_5sdp"
@@ -111,17 +100,9 @@
                     app:cardCornerRadius="@dimen/_5sdp"
                     app:cardElevation="@dimen/_2sdp">
 
-                    <TextView
-                        android:visibility="gone"
-                        android:id="@+id/custom_product_add_item"
-                        style="@style/text_11"
-                        android:padding="@dimen/_5sdp"
-                        android:text="Add Item"
-                        android:textStyle="bold" />
-
                     <RelativeLayout
-                        android:visibility="gone"
-                        android:id="@+id/custom_product_cart_layout"
+                        android:visibility="visible"
+                        android:id="@+id/custom_cart_cart_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -130,23 +111,23 @@
                         <ImageView
                             android:layout_alignParentRight="true"
                             android:src="@drawable/plus"
-                            android:id="@+id/custom_product_plus"
+                            android:id="@+id/custom_cart_plus"
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_20sdp" />
 
                         <ImageView
                             android:src="@drawable/minus"
-                            android:id="@+id/custom_product_minus"
+                            android:id="@+id/custom_cart_minus"
                             android:layout_width="@dimen/_20sdp"
                             android:layout_height="@dimen/_20sdp" />
 
                         <TextView
                             android:textColor="@color/black"
-                            android:id="@+id/custom_product_qty"
+                            android:id="@+id/custom_cart_qty"
                             style="@style/text_13"
                             android:layout_width="match_parent"
-                            android:layout_toLeftOf="@id/custom_product_plus"
-                            android:layout_toRightOf="@id/custom_product_minus"
+                            android:layout_toLeftOf="@id/custom_cart_plus"
+                            android:layout_toRightOf="@id/custom_cart_minus"
                             android:gravity="center"
                             android:textStyle="bold" />
 
