@@ -92,6 +92,8 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyHolder> {
         holder.plus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CartActivity.iTotal += Integer.parseInt(arrayList.get(position).getNewPrice());
+                CartActivity.cartTotal.setText(ConstantSp.PRICE_SYMBOL+CartActivity.iTotal);
                 int iQty = arrayList.get(position).getQty()+1;
                 int iTotal = Integer.parseInt(arrayList.get(position).getNewPrice())* iQty;
                 String insertQuery = "UPDATE CART SET PRICE='"+arrayList.get(position).getNewPrice()+"',QTY='"+iQty+"',TOTAL='"+iTotal+"' WHERE CARTID='"+arrayList.get(position).getCartId()+"'";
@@ -105,6 +107,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.MyHolder> {
         holder.minus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CartActivity.iTotal -= Integer.parseInt(arrayList.get(position).getNewPrice());
+                CartActivity.cartTotal.setText(ConstantSp.PRICE_SYMBOL+CartActivity.iTotal);
+
                 int iQty = arrayList.get(position).getQty()-1;
                 int iTotal = Integer.parseInt(arrayList.get(position).getNewPrice())* iQty;
                 if(iQty>0) {

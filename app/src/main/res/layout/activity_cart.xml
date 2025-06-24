@@ -7,19 +7,77 @@
     android:layout_height="match_parent"
     tools:context=".CartActivity">
 
-    <SearchView
-        android:id="@+id/cart_search"
+    <RelativeLayout
+        android:id="@+id/cart_data_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/_20sdp"
-        android:layout_marginVertical="@dimen/_10sdp"
-        android:queryHint="Search Product" />
+        android:layout_height="wrap_content">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cart_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/cart_search" />
+        <LinearLayout
+            android:id="@+id/cart_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/_5sdp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="@dimen/_2sdp">
+
+                <TextView
+                    android:id="@+id/cart_total"
+                    style="@style/text_14"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_5sdp"
+                android:layout_marginVertical="@dimen/_5sdp"
+                android:layout_weight="1"
+                app:cardCornerRadius="@dimen/_5sdp"
+                app:cardElevation="@dimen/_2sdp">
+
+                <TextView
+                    android:id="@+id/cart_checkout"
+                    style="@style/text_14"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Checkout" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/cart_bottom_layout">
+
+            <SearchView
+                android:id="@+id/cart_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_20sdp"
+                android:layout_marginVertical="@dimen/_10sdp"
+                android:queryHint="Search Product" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/cart_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cart_search" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/cart_image"

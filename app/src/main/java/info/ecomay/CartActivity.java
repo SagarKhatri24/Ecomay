@@ -3,12 +3,16 @@ package info.ecomay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,6 +43,12 @@ public class CartActivity extends AppCompatActivity {
     SQLiteDatabase db;
     CartAdapter adapter;
 
+    public static TextView cartTotal;
+    TextView checkout;
+    RelativeLayout dataLayout;
+
+    public static int iTotal = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +75,9 @@ public class CartActivity extends AppCompatActivity {
 
         String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT,USERID VARCHAR(10),PRODUCTID VARCHAR(10))";
         db.execSQL(wishlistTableQuery);
+
+        String cartTableQuery = "CREATE TABLE IF NOT EXISTS CART (CARTID INTEGER PRIMARY KEY AUTOINCREMENT,ORDERID VARCHAR(10), USERID VARCHAR(10),PRODUCTID VARCHAR(10),PRICE VARCHAR(20), QTY VARCHAR(10), TOTAL VARCHAR(20))";
+        db.execSQL(cartTableQuery);
 
         sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
 
@@ -99,6 +112,8 @@ public class CartActivity extends AppCompatActivity {
                         list.setDiscount(productCursor.getString(7));
                         list.setUnit(productCursor.getString(8));
                         list.setImage(productCursor.getString(3));
+
+                        iTotal += Integer.parseInt(cursor.getString(5))* Integer.parseInt(productCursor.getString(6));
                     }
                 }
                 else{
@@ -118,15 +133,28 @@ public class CartActivity extends AppCompatActivity {
         adapter = new CartAdapter(CartActivity.this, productArrayList, db);
         recyclerView.setAdapter(adapter);
 
+        cartTotal = findViewById(R.id.cart_total);
+        checkout = findViewById(R.id.cart_checkout);
+        dataLayout = findViewById(R.id.cart_data_layout);
+
+        checkout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.CART_TOTAL, String.valueOf(iTotal)).commit();
+                Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        cartTotal.setText(ConstantSp.PRICE_SYMBOL+iTotal);
+
         if(productArrayList.size()>0){
             defaultImage.setVisibility(GONE);
-            recyclerView.setVisibility(VISIBLE);
-            searchView.setVisibility(VISIBLE);
+            dataLayout.setVisibility(VISIBLE);
         }
         else{
             defaultImage.setVisibility(VISIBLE);
-            recyclerView.setVisibility(GONE);
-            searchView.setVisibility(GONE);
+            dataLayout.setVisibility(GONE);
         }
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
