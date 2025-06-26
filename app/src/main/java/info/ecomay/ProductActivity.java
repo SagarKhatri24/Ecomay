@@ -185,7 +185,7 @@ public class ProductActivity extends AppCompatActivity {
                     list.setWishlistId(0);
                 }
 
-                String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"'";
+                String selectCartQuery = "SELECT * FROM CART WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND PRODUCTID='"+cursor.getString(0)+"' AND ORDERID='0'";
                 Cursor cartCursor = db.rawQuery(selectCartQuery,null);
                 if(cartCursor.getCount()>0){
                     while (cartCursor.moveToNext()){

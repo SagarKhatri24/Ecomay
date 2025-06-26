@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -143,7 +144,11 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startPayment();
+                //startPayment();
+                sp.edit().putString(ConstantSp.ORDER_TYPE,"BuyNow").commit();
+                sp.edit().putString(ConstantSp.CART_TOTAL, sp.getString(ConstantSp.PRODUCT_NEWPRICE,"")).commit();
+                Intent intent = new Intent(ProductDetailActivity.this, CheckoutActivity.class);
+                startActivity(intent);
             }
         });
 

@@ -140,6 +140,7 @@ public class CartActivity extends AppCompatActivity {
         checkout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                sp.edit().putString(ConstantSp.ORDER_TYPE,"").commit();
                 sp.edit().putString(ConstantSp.CART_TOTAL, String.valueOf(iTotal)).commit();
                 Intent intent = new Intent(CartActivity.this, CheckoutActivity.class);
                 startActivity(intent);

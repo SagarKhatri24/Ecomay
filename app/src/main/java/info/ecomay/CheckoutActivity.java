@@ -3,12 +3,14 @@ package info.ecomay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,7 +29,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class CheckoutActivity extends AppCompatActivity {
+import com.razorpay.Checkout;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class CheckoutActivity extends AppCompatActivity implements PaymentResultWithDataListener {
 
     EditText name, email, contact, address, pincode;
     RadioGroup payVia;
@@ -86,6 +95,10 @@ public class CheckoutActivity extends AppCompatActivity {
         country = findViewById(R.id.checkout_country);
         payNow = findViewById(R.id.checkout_pay_now);
 
+        name.setText(sp.getString(ConstantSp.NAME,""));
+        email.setText(sp.getString(ConstantSp.EMAIL,""));
+        contact.setText(sp.getString(ConstantSp.CONTACT,""));
+
         ArrayAdapter adapter = new ArrayAdapter(CheckoutActivity.this, android.R.layout.simple_list_item_1, countryArray);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_checked);
         country.setAdapter(adapter);
@@ -134,28 +147,93 @@ public class CheckoutActivity extends AppCompatActivity {
                 } else if (payVia.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(CheckoutActivity.this, "Please Select Payment Mode", Toast.LENGTH_SHORT).show();
                 } else {
-                    if(sPaymentType.equalsIgnoreCase("Cash")) {
-                        String insertQuery = "INSERT INTO ORDER_TABLE VALUES (NULL,'" + sp.getString(ConstantSp.USERID, "") + "','" + name.getText().toString() + "','" + email.getText().toString() + "','" + contact.getText().toString() + "','" + address.getText().toString() + "','" + pincode.getText().toString() + "','" + sCountry + "','" + sPaymentType + "','','" + sp.getString(ConstantSp.CART_TOTAL, "") + "')";
-                        db.execSQL(insertQuery);
-
-                        String selectQuery = "SELECT MAX(ORDERID) FROM ORDER_TABLE LIMIT 1";
-                        Cursor cursor = db.rawQuery(selectQuery,null);
-                        if(cursor.getCount()>0){
-                            while (cursor.moveToNext()){
-                                String sOrderId = cursor.getString(0);
-                                String cartQuery = "UPDATE CART SET ORDERID='"+sOrderId+"' WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND ORDERID='0'";
-                                db.execSQL(cartQuery);
-                            }
+                    if (sPaymentType.equalsIgnoreCase("Cash")) {
+                        if(sp.getString(ConstantSp.ORDER_TYPE,"").equalsIgnoreCase("BuyNow")) {
+                            int iQty = 1;
+                            int iTotal = Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEWPRICE, "")) * iQty;
+                            String insertQuery = "INSERT INTO CART VALUES(NULL,'0','" + sp.getString(ConstantSp.USERID, "") + "','" + sp.getString(ConstantSp.PRODUCTID, "") + "','" + sp.getString(ConstantSp.PRODUCT_NEWPRICE, "") + "','" + iQty + "','" + iTotal + "')";
+                            db.execSQL(insertQuery);
+                            doOrder("");
                         }
-
-                        Toast.makeText(CheckoutActivity.this, "Order Placed Successfully", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(CheckoutActivity.this,HomeActivity.class);
-                        startActivity(intent);
-                        finish();
+                        else {
+                            doOrder("");
+                        }
+                    } else if (sPaymentType.equalsIgnoreCase("Online")) {
+                        startPayment();
                     }
                 }
             }
         });
 
+    }
+
+    private void startPayment() {
+        Activity activity = this;
+        Checkout co = new Checkout();
+        co.setKeyID("rzp_test_xsiOz9lYtWKHgF");
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name",getResources().getString(R.string.app_name));
+            jsonObject.put("description","Multi Product Order");
+            jsonObject.put("send_sms_hash",true);
+            jsonObject.put("allow_rotation",true);
+            jsonObject.put("image",R.mipmap.ic_launcher);
+            jsonObject.put("currancy","INR");
+            jsonObject.put("amount",String.valueOf(Integer.parseInt(sp.getString(ConstantSp.CART_TOTAL,"")) * 100));
+
+            JSONObject prefill = new JSONObject();
+            prefill.put("email",sp.getString(ConstantSp.EMAIL,""));
+            prefill.put("contact",sp.getString(ConstantSp.CONTACT,""));
+
+            jsonObject.put("prefill",prefill);
+            co.open(activity,jsonObject);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+        Log.d("RESPONSE_SUCCESS",s);
+        //Toast.makeText(CheckoutActivity.this, "Payment Successfully", Toast.LENGTH_SHORT).show();
+        if(sp.getString(ConstantSp.ORDER_TYPE,"").equalsIgnoreCase("BuyNow")){
+            int iQty = 1;
+            int iTotal = Integer.parseInt(sp.getString(ConstantSp.PRODUCT_NEWPRICE, "")) * iQty;
+            String insertQuery = "INSERT INTO CART VALUES(NULL,'0','" + sp.getString(ConstantSp.USERID, "") + "','" + sp.getString(ConstantSp.PRODUCTID, "") + "','" + sp.getString(ConstantSp.PRODUCT_NEWPRICE, "") + "','" + iQty + "','" + iTotal + "')";
+            db.execSQL(insertQuery);
+            doOrder(s);
+        }
+        else {
+            doOrder(s);
+        }
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
+        Log.d("RESPONSE_FAIL",s);
+        Toast.makeText(CheckoutActivity.this, "Payment Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    private void doOrder(String sTransactionId) {
+        String insertQuery = "INSERT INTO ORDER_TABLE VALUES (NULL,'" + sp.getString(ConstantSp.USERID, "") + "','" + name.getText().toString() + "','" + email.getText().toString() + "','" + contact.getText().toString() + "','" + address.getText().toString() + "','" + pincode.getText().toString() + "','" + sCountry + "','" + sPaymentType + "','"+sTransactionId+"','" + sp.getString(ConstantSp.CART_TOTAL, "") + "')";
+        db.execSQL(insertQuery);
+
+        String selectQuery = "SELECT MAX(ORDERID) FROM ORDER_TABLE LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery,null);
+        if(cursor.getCount()>0){
+            while (cursor.moveToNext()){
+                String sOrderId = cursor.getString(0);
+                String cartQuery = "UPDATE CART SET ORDERID='"+sOrderId+"' WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' AND ORDERID='0'";
+                db.execSQL(cartQuery);
+            }
+        }
+
+        Toast.makeText(CheckoutActivity.this, "Order Placed Successfully", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(CheckoutActivity.this,HomeActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
