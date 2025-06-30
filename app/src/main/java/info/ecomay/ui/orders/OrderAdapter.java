@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 
 import info.ecomay.ConstantSp;
+import info.ecomay.OrderDetailActivity;
 import info.ecomay.ProductDetailActivity;
 import info.ecomay.R;
 import info.ecomay.ui.home.ProductAdapter;
@@ -75,6 +76,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyHolder> {
         else{
             holder.payment.setText(ConstantSp.PRICE_SYMBOL+arrayList.get(position).getTotal()+" ( "+arrayList.get(position).getPaymentMode()+" - "+arrayList.get(position).getTransactionId()+" )");
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.ORDER_ID,arrayList.get(position).getOrderId()).commit();
+                Intent intent = new Intent(context, OrderDetailActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
