@@ -84,10 +84,11 @@ public class OrderFragment extends Fragment {
                 list.setPaymentMode(cursor.getString(8));
                 list.setTransactionId(cursor.getString(9));
                 list.setTotal(cursor.getString(10));
+                list.setStatus(cursor.getString(11));
                 arrayList.add(list);
             }
         }
-        adapter = new OrderAdapter(getActivity(), arrayList);
+        adapter = new OrderAdapter(getActivity(), arrayList,db);
         binding.orderRecycler.setAdapter(adapter);
 
         if(arrayList.size()>0){

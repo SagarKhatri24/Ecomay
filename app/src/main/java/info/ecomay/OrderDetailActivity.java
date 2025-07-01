@@ -1,13 +1,18 @@
 package info.ecomay;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,7 +23,8 @@ import java.util.ArrayList;
 
 public class OrderDetailActivity extends AppCompatActivity {
 
-    TextView orderNo,name,email,contact,address,payment;
+    TextView orderNo,name,email,contact,address,payment,status,cancel;
+    CardView cancelCard;
     RecyclerView recyclerView;
     ArrayList<CartList> arrayList;
 
@@ -67,7 +73,10 @@ public class OrderDetailActivity extends AppCompatActivity {
         contact = findViewById(R.id.order_detail_contact);
         address = findViewById(R.id.order_detail_address);
         payment = findViewById(R.id.order_detail_payment);
-
+        status = findViewById(R.id.order_detail_status);
+        cancel = findViewById(R.id.order_detail_cancel);
+        cancelCard = findViewById(R.id.order_detail_cancel_card);
+        
         String selectQuery = "SELECT * FROM ORDER_TABLE WHERE ORDERID='"+sp.getString(ConstantSp.ORDER_ID,"")+"'";
         Cursor cursor = db.rawQuery(selectQuery,null);
         if(cursor.getCount()>0){
@@ -83,6 +92,7 @@ public class OrderDetailActivity extends AppCompatActivity {
                 else{
                     payment.setText(ConstantSp.PRICE_SYMBOL+cursor.getString(10)+" ("+ cursor.getString(8) +" - "+cursor.getString(9)+")");
                 }
+                setStaus(cursor.getString(11));
             }
         }
 
@@ -127,5 +137,31 @@ public class OrderDetailActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
         }
 
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String updateQuery = "UPDATE ORDER_TABLE SET STATUS='Cancelled' WHERE ORDERID='"+sp.getString(ConstantSp.ORDER_ID,"")+"'";
+                db.execSQL(updateQuery);
+                setStaus("Cancelled");
+            }
+        });
+
+    }
+
+    private void setStaus(String sStatus) {
+        if(sStatus.equalsIgnoreCase("Pending")) {
+            cancelCard.setVisibility(VISIBLE);
+            status.setText("In Process");
+            status.setTextColor(getResources().getColor(R.color.yellow));
+        }
+        else if(sStatus.equalsIgnoreCase("Cancelled")) {
+            cancelCard.setVisibility(GONE);
+            status.setText(sStatus);
+            status.setTextColor(getResources().getColor(R.color.red));
+        }
+        else{
+            cancelCard.setVisibility(GONE);
+            status.setText(sStatus);
+        }
     }
 }

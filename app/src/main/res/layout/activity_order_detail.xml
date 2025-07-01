@@ -28,11 +28,25 @@
                 android:layout_marginLeft="@dimen/_10sdp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/order_detail_no"
-                    style="@style/text_13"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:textColor="@color/black" />
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/order_detail_status"
+                        style="@style/text_13"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginHorizontal="@dimen/_5sdp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/order_detail_no"
+                        style="@style/text_13"
+                        android:layout_width="match_parent"
+                        android:layout_toLeftOf="@id/order_detail_status"
+                        android:textColor="@color/black" />
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/order_detail_name"
@@ -62,6 +76,28 @@
                     style="@style/text_13"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_marginHorizontal="@dimen/_5sdp"
+                    android:id="@+id/order_detail_cancel_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/_3sdp"
+                    android:layout_weight="1"
+                    app:cardCornerRadius="@dimen/_5sdp"
+                    app:cardElevation="@dimen/_2sdp">
+
+                    <TextView
+                        android:id="@+id/order_detail_cancel"
+                        style="@style/text_11"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:padding="@dimen/_5sdp"
+                        android:text="Cancel Order"
+                        android:textColor="@color/red"
+                        android:textStyle="bold" />
+
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 

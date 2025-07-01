@@ -2,7 +2,7 @@ package info.ecomay.ui.orders;
 
 public class OrderList {
 
-    String orderId,name,email,contact,address,pincode,country,paymentMode,transactionId,total;
+    String orderId,name,email,contact,address,pincode,country,paymentMode,transactionId,total,status;
 
     public String getOrderId() {
         return orderId;
@@ -83,4 +83,13 @@ public class OrderList {
     public void setTotal(String total) {
         this.total = total;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }
