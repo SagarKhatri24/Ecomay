@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -106,6 +107,8 @@ public class ProductActivity extends AppCompatActivity {
     SQLiteDatabase db;
     ProductAdapter adapter;
 
+    FloatingActionButton add;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,6 +137,14 @@ public class ProductActivity extends AppCompatActivity {
         db.execSQL(wishlistTableQuery);
 
         sp = getSharedPreferences(ConstantSp.PREF, MODE_PRIVATE);
+
+        add = findViewById(R.id.product_add);
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            add.setVisibility(VISIBLE);
+        }
+        else{
+            add.setVisibility(GONE);
+        }
 
         defaultImage = findViewById(R.id.product_image);
 

@@ -28,6 +28,35 @@
             android:maxLines="2"
             android:minLines="2" />
 
+        <LinearLayout
+            android:id="@+id/custom_category_edit_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/custom_category_edit"
+                style="@style/text_11"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:background="@color/yellow"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="Edit"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/custom_category_delete"
+                style="@style/text_11"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:background="@color/red"
+                android:gravity="center"
+                android:paddingVertical="@dimen/_3sdp"
+                android:text="Delete"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_category"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/home_product_title"
-            style="@style/text_12"
-            android:layout_below="@id/home_category"
-            android:layout_marginLeft="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:text="Trending Products" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/home_product_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/home_product_title"
-            android:layout_marginTop="@dimen/_10sdp" />
-    </RelativeLayout>
-</ScrollView>
+            <TextView
+                android:id="@+id/home_product_title"
+                style="@style/text_12"
+                android:layout_below="@id/home_category"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="Trending Products" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/home_product_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/home_product_title"
+                android:layout_marginTop="@dimen/_10sdp" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_margin="@dimen/_15sdp"
+        android:id="@+id/home_category_add"
+        app:backgroundTint="@color/blue"
+        android:src="@drawable/plus_new"
+        android:layout_gravity="bottom|end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>

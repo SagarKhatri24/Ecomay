@@ -1,6 +1,7 @@
 package info.ecomay;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ import info.ecomay.databinding.ActivityHomeBinding;
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +29,7 @@ public class HomeActivity extends AppCompatActivity {
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -41,9 +43,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.home_menu,menu);
-        return super.onCreateOptionsMenu(menu);
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            return false;
+        }
+        else {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.home_menu, menu);
+            return super.onCreateOptionsMenu(menu);
+        }
     }
 
     @Override

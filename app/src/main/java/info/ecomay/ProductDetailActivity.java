@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -46,6 +47,8 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
     RelativeLayout cartLayout;
     ImageView plus,minus;
     TextView qty;
+
+    CardView cartCard;
 
     int iQty = 0;
     String sCartId = "";
@@ -96,6 +99,8 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
         plus = findViewById(R.id.product_detail_plus);
         minus = findViewById(R.id.product_detail_minus);
         qty = findViewById(R.id.product_detail_qty);
+
+        cartCard = findViewById(R.id.product_detail_cart_card);
 
         name.setText(sp.getString(ConstantSp.PRODUCT_NAME,""));
         newPrice.setText(ConstantSp.PRICE_SYMBOL+sp.getString(ConstantSp.PRODUCT_NEWPRICE,""));
@@ -209,6 +214,17 @@ public class ProductDetailActivity extends AppCompatActivity implements PaymentR
                 }
             }
         });
+
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            cartCard.setVisibility(GONE);
+            buyNow.setVisibility(GONE);
+            wishlist.setVisibility(GONE);
+        }
+        else{
+            cartCard.setVisibility(VISIBLE);
+            buyNow.setVisibility(VISIBLE);
+            wishlist.setVisibility(VISIBLE);
+        }
 
     }
 

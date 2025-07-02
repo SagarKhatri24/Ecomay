@@ -310,7 +310,15 @@ public class ProfileFragment extends Fragment {
             confirmPasswordHide.setVisibility(VISIBLE);
             confirmPasswordShow.setVisibility(VISIBLE);
 
-            editProfile.setVisibility(GONE);
+            if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+                editProfile.setVisibility(GONE);
+                delete.setVisibility(GONE);
+            }
+            else{
+                editProfile.setVisibility(GONE);
+                delete.setVisibility(VISIBLE);
+            }
+
             submit.setVisibility(VISIBLE);
         }
         else{
@@ -322,6 +330,16 @@ public class ProfileFragment extends Fragment {
             confirmPasswordShow.setVisibility(GONE);
 
             editProfile.setVisibility(VISIBLE);
+
+            if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+                editProfile.setVisibility(GONE);
+                delete.setVisibility(GONE);
+            }
+            else{
+                editProfile.setVisibility(VISIBLE);
+                delete.setVisibility(VISIBLE);
+            }
+
             submit.setVisibility(GONE);
         }
 

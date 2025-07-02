@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,8 @@ public class SubCategoryActivity extends AppCompatActivity {
 
     ImageView defaultImage;
     SQLiteDatabase db;
+
+    FloatingActionButton add;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +72,15 @@ public class SubCategoryActivity extends AppCompatActivity {
         db.execSQL(productTableQuery);
 
         sp = getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
+
+        add = findViewById(R.id.sub_category_add);
+
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            add.setVisibility(VISIBLE);
+        }
+        else{
+            add.setVisibility(GONE);
+        }
 
         defaultImage = findViewById(R.id.sub_category_image);
 

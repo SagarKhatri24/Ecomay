@@ -1,6 +1,8 @@
 package info.ecomay.ui.home;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -138,6 +140,13 @@ public class HomeFragment extends Fragment {
 
         String wishlistTableQuery = "CREATE TABLE IF NOT EXISTS WISHLIST (WISHLISTID INTEGER PRIMARY KEY AUTOINCREMENT,USERID VARCHAR(10),PRODUCTID VARCHAR(10))";
         db.execSQL(wishlistTableQuery);
+
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            binding.homeCategoryAdd.setVisibility(VISIBLE);
+        }
+        else{
+            binding.homeCategoryAdd.setVisibility(GONE);
+        }
 
         categoryData();
 

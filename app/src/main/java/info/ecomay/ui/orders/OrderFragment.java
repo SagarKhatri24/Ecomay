@@ -69,7 +69,13 @@ public class OrderFragment extends Fragment {
         binding.orderRecycler.setNestedScrollingEnabled(false);
 
         arrayList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM ORDER_TABLE WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' ORDER BY ORDERID DESC";
+        String selectQuery = null;
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            selectQuery = "SELECT * FROM ORDER_TABLE ORDER BY ORDERID DESC";
+        }
+        else{
+            selectQuery = "SELECT * FROM ORDER_TABLE WHERE USERID='"+sp.getString(ConstantSp.USERID,"")+"' ORDER BY ORDERID DESC";
+        }
         Cursor cursor = db.rawQuery(selectQuery,null);
         if (cursor.getCount()>0){
             while (cursor.moveToNext()){

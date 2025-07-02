@@ -1,6 +1,8 @@
 package info.ecomay.ui.home;
 
 import static android.content.Context.MODE_PRIVATE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +49,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
     public class MyHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        TextView name;
+        TextView name,edit,delete;
+        LinearLayout editLayout;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,11 +58,22 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
             name = itemView.findViewById(R.id.custom_category_name);
             imageView = itemView.findViewById(R.id.custom_category_image);
 
+            edit = itemView.findViewById(R.id.custom_category_edit);
+            delete = itemView.findViewById(R.id.custom_category_delete);
+            editLayout = itemView.findViewById(R.id.custom_category_edit_layout);
+
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            holder.editLayout.setVisibility(VISIBLE);
+        }
+        else{
+            holder.editLayout.setVisibility(GONE);
+        }
+
         holder.name.setText(arrayList.get(position).getName());
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
 

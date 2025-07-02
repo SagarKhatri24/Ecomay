@@ -14,10 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -58,8 +60,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
     public class MyHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView,wishlist,minus,plus;
-        TextView name,newPrice,oldPrice,discount,unit,addItem,qty;
+        TextView name,newPrice,oldPrice,discount,unit,addItem,qty,edit,delete;
         RelativeLayout cartLayout;
+        CardView cartCard;
+        LinearLayout editLayout;
 
         public MyHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,11 +81,24 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
             qty = itemView.findViewById(R.id.custom_product_qty);
             cartLayout = itemView.findViewById(R.id.custom_product_cart_layout);
 
+            cartCard = itemView.findViewById(R.id.custom_product_cart_card);
+
+            edit = itemView.findViewById(R.id.custom_product_edit);
+            delete = itemView.findViewById(R.id.custom_product_delete);
+            editLayout = itemView.findViewById(R.id.custom_product_edit_layout);
+
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyHolder holder, int position) {
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            holder.editLayout.setVisibility(VISIBLE);
+        }
+        else{
+            holder.editLayout.setVisibility(GONE);
+        }
+
         holder.name.setText(arrayList.get(position).getName());
         holder.newPrice.setText(ConstantSp.PRICE_SYMBOL+arrayList.get(position).getNewPrice());
         holder.oldPrice.setText(ConstantSp.PRICE_SYMBOL+arrayList.get(position).getOldPrice());
@@ -91,6 +108,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyHolder
         holder.unit.setText(arrayList.get(position).getUnit());
 
         Glide.with(context).load(arrayList.get(position).getImage()).placeholder(R.mipmap.ic_launcher).into(holder.imageView);
+
+        if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
+            holder.wishlist.setVisibility(GONE);
+            holder.cartCard.setVisibility(GONE);
+        }
+        else{
+            holder.wishlist.setVisibility(VISIBLE);
+            holder.cartCard.setVisibility(VISIBLE);
+        }
 
         if(arrayList.get(position).getWishlistId()==0){
             holder.wishlist.setImageResource(R.drawable.wishlist_blank);
