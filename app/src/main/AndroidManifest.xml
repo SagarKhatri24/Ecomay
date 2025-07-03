@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Ecomay"
         tools:targetApi="31">
         <activity
+            android:name=".AddCategoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrderDetailActivity"
             android:exported="false" />
         <activity

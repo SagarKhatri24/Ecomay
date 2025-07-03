@@ -4,7 +4,9 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -70,10 +72,25 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyHolder> {
             holder.status.setText("In Process");
             holder.status.setTextColor(context.getResources().getColor(R.color.yellow));
         }
-        else if(arrayList.get(position).getStatus().equalsIgnoreCase("Cancelled")) {
+        else if(arrayList.get(position).getStatus().equalsIgnoreCase("Cancelled") || arrayList.get(position).getStatus().equalsIgnoreCase("Cancelled By Admin")) {
             holder.cancelCard.setVisibility(GONE);
             holder.status.setText(arrayList.get(position).getStatus());
             holder.status.setTextColor(context.getResources().getColor(R.color.red));
+        }
+        else if(arrayList.get(position).getStatus().equalsIgnoreCase("Dispatch")) {
+            holder.cancelCard.setVisibility(GONE);
+            holder.status.setText(arrayList.get(position).getStatus());
+            holder.status.setTextColor(context.getResources().getColor(R.color.blue));
+        }
+        else if(arrayList.get(position).getStatus().equalsIgnoreCase("Out For Deliver")) {
+            holder.cancelCard.setVisibility(GONE);
+            holder.status.setText(arrayList.get(position).getStatus());
+            holder.status.setTextColor(context.getResources().getColor(R.color.black_gray));
+        }
+        else if(arrayList.get(position).getStatus().equalsIgnoreCase("Deliver")) {
+            holder.cancelCard.setVisibility(GONE);
+            holder.status.setText(arrayList.get(position).getStatus());
+            holder.status.setTextColor(context.getResources().getColor(R.color.green));
         }
         else{
             holder.cancelCard.setVisibility(GONE);
@@ -83,7 +100,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyHolder> {
         holder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                doUpdateStatus("Cancelled",position);
+                if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("Admin")){
+                    doUpdateStatus("Cancelled By Admin", position);
+                }
+                else {
+                    doUpdateStatus("Cancelled", position);
+                }
             }
         });
 
@@ -107,6 +129,51 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.MyHolder> {
             }
         });
 
+        holder.status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("Admin")) {
+                    if (arrayList.get(position).getStatus().equalsIgnoreCase("Cancelled") || arrayList.get(position).getStatus().equalsIgnoreCase("Cancelled By Admin")) {
+
+                    } else {
+                        if (arrayList.get(position).getStatus().equalsIgnoreCase("Pending")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Cancel", "Dispatch", position);
+                        }
+                        else if (arrayList.get(position).getStatus().equalsIgnoreCase("Dispatch")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Pending", "Out For Deliver", position);
+                        }
+                        else if (arrayList.get(position).getStatus().equalsIgnoreCase("Out For Deliver")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Dispatch", "Deliver", position);
+                        }
+                        else{
+
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void openDialog(String sStatus1, String sStatus2, int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Order Process");
+        builder.setPositiveButton(sStatus2, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doUpdateStatus(sStatus2,position);
+            }
+        });
+        builder.setNeutralButton(sStatus1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                doUpdateStatus(sStatus1,position);
+            }
+        });
+        builder.show();
     }
 
     private void doUpdateStatus(String sStatus, int position) {

@@ -3,6 +3,8 @@ package info.ecomay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -31,6 +33,7 @@ public class OrderDetailActivity extends AppCompatActivity {
     SharedPreferences sp;
 
     SQLiteDatabase db;
+    String sStatus = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,8 @@ public class OrderDetailActivity extends AppCompatActivity {
                 else{
                     payment.setText(ConstantSp.PRICE_SYMBOL+cursor.getString(10)+" ("+ cursor.getString(8) +" - "+cursor.getString(9)+")");
                 }
-                setStaus(cursor.getString(11));
+                sStatus = cursor.getString(11);
+                setStaus(sStatus);
             }
         }
 
@@ -140,12 +144,67 @@ public class OrderDetailActivity extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String updateQuery = "UPDATE ORDER_TABLE SET STATUS='Cancelled' WHERE ORDERID='"+sp.getString(ConstantSp.ORDER_ID,"")+"'";
-                db.execSQL(updateQuery);
-                setStaus("Cancelled");
+                if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("Admin")){
+                    updateStatus("Cancelled By Admin");
+                }
+                else {
+                    updateStatus("Cancelled");
+                }
             }
         });
 
+        status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("Admin")) {
+                    if (sStatus.equalsIgnoreCase("Cancelled") || sStatus.equalsIgnoreCase("Cancelled By Admin")) {
+
+                    } else {
+                        if (sStatus.equalsIgnoreCase("Pending")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Cancel", "Dispatch");
+                        }
+                        else if (sStatus.equalsIgnoreCase("Dispatch")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Pending", "Out For Deliver");
+                        }
+                        else if (sStatus.equalsIgnoreCase("Out For Deliver")) {
+                            //doUpdateStatus("Dispatch", position);
+                            openDialog("Dispatch", "Deliver");
+                        }
+                        else{
+
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void openDialog(String sStatus1, String sStatus2) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(OrderDetailActivity.this);
+        builder.setTitle("Order Process");
+        builder.setPositiveButton(sStatus2, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                updateStatus(sStatus2);
+            }
+        });
+        builder.setNeutralButton(sStatus1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                updateStatus(sStatus1);
+            }
+        });
+        builder.show();
+    }
+
+    private void updateStatus(String sStatus) {
+        this.sStatus = sStatus;
+        String updateQuery = "UPDATE ORDER_TABLE SET STATUS='"+sStatus+"' WHERE ORDERID='" + sp.getString(ConstantSp.ORDER_ID, "") + "'";
+        db.execSQL(updateQuery);
+        setStaus(sStatus);
     }
 
     private void setStaus(String sStatus) {
@@ -154,10 +213,25 @@ public class OrderDetailActivity extends AppCompatActivity {
             status.setText("In Process");
             status.setTextColor(getResources().getColor(R.color.yellow));
         }
-        else if(sStatus.equalsIgnoreCase("Cancelled")) {
+        else if(sStatus.equalsIgnoreCase("Cancelled") || sStatus.equalsIgnoreCase("Cancelled By Admin")) {
             cancelCard.setVisibility(GONE);
             status.setText(sStatus);
             status.setTextColor(getResources().getColor(R.color.red));
+        }
+        else if(sStatus.equalsIgnoreCase("Dispatch")) {
+            cancelCard.setVisibility(GONE);
+            status.setText(sStatus);
+            status.setTextColor(getResources().getColor(R.color.blue));
+        }
+        else if(sStatus.equalsIgnoreCase("Out For Deliver")) {
+            cancelCard.setVisibility(GONE);
+            status.setText(sStatus);
+            status.setTextColor(getResources().getColor(R.color.black_gray));
+        }
+        else if(sStatus.equalsIgnoreCase("Deliver")) {
+            cancelCard.setVisibility(GONE);
+            status.setText(sStatus);
+            status.setTextColor(getResources().getColor(R.color.green));
         }
         else{
             cancelCard.setVisibility(GONE);

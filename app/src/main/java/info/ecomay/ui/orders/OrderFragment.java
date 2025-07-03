@@ -68,6 +68,23 @@ public class OrderFragment extends Fragment {
         binding.orderRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         binding.orderRecycler.setNestedScrollingEnabled(false);
 
+        Glide
+                .with(getActivity())
+                .asGif()
+                .load("https://assets-v2.lottiefiles.com/a/0e30b444-117c-11ee-9b0d-0fd3804d46cd/BkQxD7wtnZ.gif")
+                .placeholder(R.mipmap.ic_launcher)
+                .into(binding.productImage);
+
+        return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setData();
+    }
+
+    private void setData() {
         arrayList = new ArrayList<>();
         String selectQuery = null;
         if(sp.getString(ConstantSp.USERTYPE,"").equalsIgnoreCase("admin")){
@@ -105,15 +122,6 @@ public class OrderFragment extends Fragment {
             binding.productImage.setVisibility(VISIBLE);
             binding.orderRecycler.setVisibility(GONE);
         }
-
-        Glide
-                .with(getActivity())
-                .asGif()
-                .load("https://assets-v2.lottiefiles.com/a/0e30b444-117c-11ee-9b0d-0fd3804d46cd/BkQxD7wtnZ.gif")
-                .placeholder(R.mipmap.ic_launcher)
-                .into(binding.productImage);
-
-        return root;
     }
 
     @Override

@@ -5,6 +5,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.ArrayList;
 
+import info.ecomay.AddCategoryActivity;
 import info.ecomay.ConstantSp;
 import info.ecomay.databinding.FragmentHomeBinding;
 
@@ -148,7 +150,16 @@ public class HomeFragment extends Fragment {
             binding.homeCategoryAdd.setVisibility(GONE);
         }
 
-        categoryData();
+        binding.homeCategoryAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.CATEGORYID,"").commit();
+                sp.edit().putString(ConstantSp.CATEGORYNAME,"").commit();
+                sp.edit().putString(ConstantSp.CATEGORYIMAGE,"").commit();
+                Intent intent = new Intent(getActivity(), AddCategoryActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return root;
     }
@@ -156,6 +167,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        categoryData();
         productData();
     }
 

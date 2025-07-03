@@ -14,6 +14,8 @@ public class ConstantSp {
     public static final String COUNTRY = "county";
 
     public static final String CATEGORYID = "categoryid";
+    public static final String CATEGORYNAME = "categoryname";
+    public static final String CATEGORYIMAGE = "categoryimage";
 
     public static final String SUBCATEGORYID = "subcategoryid";
 
