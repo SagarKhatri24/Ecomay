@@ -18,6 +18,8 @@ public class ConstantSp {
     public static final String CATEGORYIMAGE = "categoryimage";
 
     public static final String SUBCATEGORYID = "subcategoryid";
+    public static final String SUBCATEGORYNAME = "subcategoryname";
+    public static final String SUBCATEGORYIMAGE = "subcategoryimage";
 
     public static final String PRODUCTID = "productid";
     public static final String PRODUCT_NAME = "productname";

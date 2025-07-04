@@ -7,6 +7,7 @@ import static android.view.View.VISIBLE;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -26,17 +26,18 @@ import info.ecomay.AddCategoryActivity;
 import info.ecomay.ConstantSp;
 import info.ecomay.R;
 import info.ecomay.SubCategoryActivity;
-import info.ecomay.SubCategoryAdapter;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHolder> {
 
     Context context;
     ArrayList<CategoryList> arrayList;
     SharedPreferences sp;
+    SQLiteDatabase db;
 
-    public CategoryAdapter(Context context,ArrayList<CategoryList> arrayList) {
+    public CategoryAdapter(Context context, ArrayList<CategoryList> arrayList, SQLiteDatabase db) {
         this.context = context;
         this.arrayList = arrayList;
+        this.db = db;
         sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
@@ -98,6 +99,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyHold
 
                 Intent intent = new Intent(context, AddCategoryActivity.class);
                 context.startActivity(intent);
+            }
+        });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String deleteQuery = "DELETE FROM CATEGORY WHERE CATEGORYID='"+arrayList.get(position).getCategoryId()+"'";
+                db.execSQL(deleteQuery);
+                arrayList.remove(position);
+                notifyDataSetChanged();
             }
         });
 

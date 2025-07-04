@@ -261,7 +261,7 @@ public class HomeFragment extends Fragment {
                 arrayList.add(list);
             }
         }
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList);
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(),arrayList,db);
         binding.homeCategory.setAdapter(adapter);
     }
 

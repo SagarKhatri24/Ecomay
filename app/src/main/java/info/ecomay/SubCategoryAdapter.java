@@ -7,6 +7,7 @@ import static android.view.View.VISIBLE;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,12 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
     Context context;
     ArrayList<SubCategoryList> arrayList;
     SharedPreferences sp;
+    SQLiteDatabase db;
 
-    public SubCategoryAdapter(Context context, ArrayList<SubCategoryList> arrayList) {
+    public SubCategoryAdapter(Context context, ArrayList<SubCategoryList> arrayList, SQLiteDatabase db) {
         this.context = context;
         this.arrayList = arrayList;
+        this.db = db;
         sp = context.getSharedPreferences(ConstantSp.PREF,MODE_PRIVATE);
     }
 
@@ -79,6 +82,26 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
             }
         });
 
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.SUBCATEGORYID, String.valueOf(arrayList.get(position).getSubCategoryId())).commit();
+                sp.edit().putString(ConstantSp.SUBCATEGORYNAME, arrayList.get(position).getName()).commit();
+                sp.edit().putString(ConstantSp.SUBCATEGORYIMAGE, arrayList.get(position).getImage()).commit();
+                Intent intent = new Intent(context, AddSubCategoryActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String deleteQuery = "DELETE FROM SUBCATEGORY WHERE SUBCATEGORYID='"+arrayList.get(position).getSubCategoryId()+"'";
+                db.execSQL(deleteQuery);
+                arrayList.remove(position);
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

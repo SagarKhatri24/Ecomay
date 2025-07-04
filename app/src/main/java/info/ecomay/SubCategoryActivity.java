@@ -3,10 +3,12 @@ package info.ecomay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -84,6 +86,36 @@ public class SubCategoryActivity extends AppCompatActivity {
 
         defaultImage = findViewById(R.id.sub_category_image);
 
+
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sp.edit().putString(ConstantSp.SUBCATEGORYID, "").commit();
+                sp.edit().putString(ConstantSp.SUBCATEGORYNAME, "").commit();
+                sp.edit().putString(ConstantSp.SUBCATEGORYIMAGE, "").commit();
+
+                Intent intent = new Intent(SubCategoryActivity.this, AddSubCategoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Glide
+                .with(SubCategoryActivity.this)
+                .asGif()
+                .load("https://assets-v2.lottiefiles.com/a/0e30b444-117c-11ee-9b0d-0fd3804d46cd/BkQxD7wtnZ.gif")
+                .placeholder(R.mipmap.ic_launcher)
+                .into(defaultImage);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setSubCategoryData();
+    }
+
+    private void setSubCategoryData() {
         recyclerView = findViewById(R.id.sub_category_recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
@@ -110,7 +142,7 @@ public class SubCategoryActivity extends AppCompatActivity {
                 arrayList.add(list);
             }
         }
-        SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList);
+        SubCategoryAdapter adapter = new SubCategoryAdapter(SubCategoryActivity.this,arrayList,db);
         recyclerView.setAdapter(adapter);
 
         if(arrayList.size()>0){
@@ -121,13 +153,5 @@ public class SubCategoryActivity extends AppCompatActivity {
             defaultImage.setVisibility(VISIBLE);
             recyclerView.setVisibility(GONE);
         }
-
-        Glide
-                .with(SubCategoryActivity.this)
-                .asGif()
-                .load("https://assets-v2.lottiefiles.com/a/0e30b444-117c-11ee-9b0d-0fd3804d46cd/BkQxD7wtnZ.gif")
-                .placeholder(R.mipmap.ic_launcher)
-                .into(defaultImage);
-
     }
 }

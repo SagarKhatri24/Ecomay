@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    style="@style/bgStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AddSubCategoryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/add_sub_category_title"
+            style="@style/text_16_bold"
+            android:text="Add Sub Category" />
+
+        <Spinner
+            android:id="@+id/add_sub_category_spinner"
+            android:layout_marginHorizontal="@dimen/_20sdp"
+            android:layout_marginTop="@dimen/_50sdp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/add_sub_category_name"
+            style="@style/edit_14"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:hint="Sub Category Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/add_sub_category_image"
+            style="@style/edit_14"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:hint="Sub Category Image" />
+
+        <Button
+            android:id="@+id/add_sub_category_button"
+            style="@style/button_14"
+            android:layout_marginTop="@dimen/_30sdp"
+            android:text="Submit" />
+    </LinearLayout>
+</ScrollView>
